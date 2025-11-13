@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FiTrash2 } from "react-icons/fi";
 
 function TodoList() {
   const [todos, setTodos] = useState([
@@ -286,7 +287,7 @@ function TodoList() {
                           e.target.style.color = COLORS.red;
                         }}
                       >
-                        ×
+                        <FiTrash2 />
                       </button>
                     </div>
                   ))}
@@ -372,7 +373,7 @@ function TodoList() {
                           e.target.style.color = COLORS.red;
                         }}
                       >
-                        ×
+                        <FiTrash2 />
                       </button>
                     </div>
                   ))}
