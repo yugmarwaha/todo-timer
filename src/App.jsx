@@ -69,6 +69,9 @@ function App() {
           </button>
         </div>
 
+        {/* Inspirational Quotes */}
+        <Quotes />
+
         {/* Timer and Todo List Section */}
         <Row className="g-4">
           {/* Timer Section - Left */}
