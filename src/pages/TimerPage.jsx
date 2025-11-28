@@ -51,11 +51,6 @@ function TimerPage() {
       progressPercentage > 25 ? COLORS.orange :
       COLORS.red;
 
-    // Debug logging
-    if (isActive) {
-      console.log(`Progress: ${progressPercentage.toFixed(1)}% | Color: ${color} | ${minutes}:${String(seconds).padStart(2, '0')}`);
-    }
-
     return color;
   };
 

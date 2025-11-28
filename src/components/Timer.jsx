@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, Button, ButtonGroup } from "react-bootstrap";
 
-function Timer() {
-  const [initialMinutes, setInitialMinutes] = useState(25);
-  const [minutes, setMinutes] = useState(25);
+function Timer({
+  compact = false,
+  showHero = false,
+  initialTime = 25,
+  onTimerComplete = null
+}) {
+  const [initialMinutes, setInitialMinutes] = useState(initialTime);
+  const [minutes, setMinutes] = useState(initialTime);
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -28,11 +33,6 @@ function Timer() {
       progressPercentage > 50 ? COLORS.yellow :
       progressPercentage > 25 ? COLORS.orange :
       COLORS.red;
-
-    // Debug logging
-    if (isRunning) {
-      console.log(`Progress: ${progressPercentage.toFixed(1)}% | Color: ${color} | ${minutes}:${String(seconds).padStart(2, '0')}`);
-    }
 
     return color;
   };
@@ -69,6 +69,12 @@ function Timer() {
               }
               // Fallback alert
               alert("Timer finished! Great job on your focus session.");
+
+              // Call optional completion callback
+              if (onTimerComplete) {
+                onTimerComplete();
+              }
+
               return 0;
             }
             setMinutes((prevMinutes) => prevMinutes - 1);
@@ -103,8 +109,9 @@ function Timer() {
   const handleReset = () => {
     setIsRunning(false);
     setIsPaused(false);
-    setMinutes(initialMinutes);
+    setMinutes(initialTime);
     setSeconds(0);
+    setInitialMinutes(initialTime);
   };
 
   const adjustTime = (amount) => {
