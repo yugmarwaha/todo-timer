@@ -12,7 +12,10 @@ function Timer({
   const [seconds, setSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const [editTimeValue, setEditTimeValue] = useState("");
   const intervalRef = useRef(null);
+  const timerFinishedRef = useRef(false);
 
   const totalSeconds = initialMinutes * 60;
   const currentSeconds = minutes * 60 + seconds;
@@ -38,46 +41,56 @@ function Timer({
   };
 
   useEffect(() => {
-    if (isRunning && currentSeconds > 0) {
+    if (isRunning) {
       intervalRef.current = setInterval(() => {
         setSeconds((prevSeconds) => {
           if (prevSeconds === 0) {
-            if (minutes === 0) {
-              setIsRunning(false);
-              setIsPaused(false);
-              // Timer finished - add notification
-              if (
-                "Notification" in window &&
-                Notification.permission === "granted"
-              ) {
-                new Notification("Timer Finished!", {
-                  body: "Your focus session is complete. Take a break!",
-                  icon: "/vite.svg",
-                });
-              } else if (
-                "Notification" in window &&
-                Notification.permission !== "denied"
-              ) {
-                Notification.requestPermission().then((permission) => {
-                  if (permission === "granted") {
-                    new Notification("Timer Finished!", {
-                      body: "Your focus session is complete. Take a break!",
-                      icon: "/vite.svg",
-                    });
-                  }
-                });
-              }
-              // Fallback alert
-              alert("Timer finished! Great job on your focus session.");
+            setMinutes((prevMinutes) => {
+              if (prevMinutes === 0) {
+                // Timer finished - clear interval immediately
+                if (intervalRef.current) {
+                  clearInterval(intervalRef.current);
+                }
 
-              // Call optional completion callback
-              if (onTimerComplete) {
-                onTimerComplete();
-              }
+                setIsRunning(false);
+                setIsPaused(false);
 
-              return 0;
-            }
-            setMinutes((prevMinutes) => prevMinutes - 1);
+                // Timer finished - add notification
+                if (
+                  "Notification" in window &&
+                  Notification.permission === "granted"
+                ) {
+                  new Notification("Timer Finished!", {
+                    body: "Your focus session is complete. Take a break!",
+                    icon: "/vite.svg",
+                  });
+                } else if (
+                  "Notification" in window &&
+                  Notification.permission !== "denied"
+                ) {
+                  Notification.requestPermission().then((permission) => {
+                    if (permission === "granted") {
+                      new Notification("Timer Finished!", {
+                        body: "Your focus session is complete. Take a break!",
+                        icon: "/vite.svg",
+                      });
+                    }
+                  });
+                }
+                // Fallback alert
+                alert("Timer finished! Great job on your focus session.");
+
+                // Call optional completion callback
+                if (onTimerComplete) {
+                  onTimerComplete();
+                }
+
+                // Reset to initial time
+                setTimeout(() => setSeconds(0), 0);
+                return initialMinutes;
+              }
+              return prevMinutes - 1;
+            });
             return 59;
           }
           return prevSeconds - 1;
@@ -94,11 +107,17 @@ function Timer({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, minutes, currentSeconds]);
+  }, [isRunning, onTimerComplete, initialMinutes]);
 
   const handleStart = () => {
+    // If starting from X:00, adjust to (X-1):59 to prevent immediate decrement
+    if (seconds === 0 && minutes > 0) {
+      setMinutes((prev) => prev - 1);
+      setSeconds(59);
+    }
     setIsRunning(true);
     setIsPaused(false);
+    timerFinishedRef.current = false; // Reset the flag when starting
   };
 
   const handlePause = () => {
@@ -109,9 +128,8 @@ function Timer({
   const handleReset = () => {
     setIsRunning(false);
     setIsPaused(false);
-    setMinutes(initialTime);
+    setMinutes(initialMinutes);
     setSeconds(0);
-    setInitialMinutes(initialTime);
   };
 
   const adjustTime = (amount) => {
@@ -121,6 +139,46 @@ function Timer({
       setMinutes(newMinutes);
       setSeconds(0);
     }
+  };
+
+  // Custom time input handlers
+  const handleTimeClick = () => {
+    if (!isRunning && !isPaused) {
+      setIsEditingTime(true);
+      setEditTimeValue(String(initialMinutes));
+    }
+  };
+
+  const handleTimeEdit = (e) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      setEditTimeValue(value);
+    }
+  };
+
+  const handleTimeEditBlur = () => {
+    applyEditedTime();
+  };
+
+  const handleTimeEditKeyDown = (e) => {
+    if (e.key === "Enter") {
+      applyEditedTime();
+    } else if (e.key === "Escape") {
+      setIsEditingTime(false);
+      setEditTimeValue("");
+    }
+  };
+
+  const applyEditedTime = () => {
+    const numValue = parseInt(editTimeValue, 10);
+    if (!isNaN(numValue) && numValue >= 1 && numValue <= 999) {
+      setInitialMinutes(numValue);
+      setMinutes(numValue);
+      setSeconds(0);
+    }
+    setIsEditingTime(false);
+    setEditTimeValue("");
   };
 
   // SVG circle properties
