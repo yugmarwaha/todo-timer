@@ -172,9 +172,11 @@ function Timer({
 
   const applyEditedTime = () => {
     const numValue = parseInt(editTimeValue, 10);
-    if (!isNaN(numValue) && numValue >= 1 && numValue <= 999) {
-      setInitialMinutes(numValue);
-      setMinutes(numValue);
+    if (!isNaN(numValue) && numValue >= 1) {
+      // Cap at 60 minutes
+      const clampedValue = Math.min(numValue, 60);
+      setInitialMinutes(clampedValue);
+      setMinutes(clampedValue);
       setSeconds(0);
     }
     setIsEditingTime(false);
@@ -285,24 +287,53 @@ function Timer({
               width: "100%",
             }}
           >
-            <div
-              style={{
-                fontSize: "4rem",
-                fontWeight: "900",
-                fontFamily: "'Inter', sans-serif",
-                letterSpacing: "1px",
-                lineHeight: 1,
-                color: getTimerColor(),
-              }}
-            >
-              {String(minutes).padStart(2, "0")}
-              <span
-                style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
+            {isEditingTime ? (
+              <input
+                type="text"
+                value={editTimeValue}
+                onChange={handleTimeEdit}
+                onBlur={handleTimeEditBlur}
+                onKeyDown={handleTimeEditKeyDown}
+                autoFocus
+                placeholder="Min"
+                style={{
+                  fontSize: "4rem",
+                  fontWeight: "900",
+                  fontFamily: "'Inter', sans-serif",
+                  color: getTimerColor(),
+                  background: "transparent",
+                  border: "none",
+                  outline: `3px solid ${getTimerColor()}`,
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  width: "180px",
+                  padding: "8px 16px",
+                  letterSpacing: "1px",
+                  lineHeight: 1,
+                }}
+              />
+            ) : (
+              <div
+                onClick={handleTimeClick}
+                style={{
+                  fontSize: "4rem",
+                  fontWeight: "900",
+                  fontFamily: "'Inter', sans-serif",
+                  letterSpacing: "1px",
+                  lineHeight: 1,
+                  color: getTimerColor(),
+                  cursor: !isRunning && !isPaused ? "pointer" : "default",
+                }}
               >
-                :
-              </span>
-              {String(seconds).padStart(2, "0")}
-            </div>
+                {String(minutes).padStart(2, "0")}
+                <span
+                  style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
+                >
+                  :
+                </span>
+                {String(seconds).padStart(2, "0")}
+              </div>
+            )}
             <div
               className="mt-2"
               style={{
