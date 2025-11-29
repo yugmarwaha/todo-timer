@@ -32,7 +32,11 @@ function Timer({
     rose: "#F43F5E",
   };
 
-  // Get color based on time remaining (6 color ranges)
+  /**
+   * Returns the color for the timer based on remaining time percentage.
+   * Uses a 6-color gradient system for visual feedback.
+   * @returns {string} Hex color code
+   */
   const getTimerColor = () => {
     const color =
       progressPercentage > 83 ? COLORS.emerald :  // 100-83%: emerald
@@ -45,7 +49,10 @@ function Timer({
     return color;
   };
 
-  // Get gradient based on time remaining
+  /**
+   * Returns a CSS gradient based on remaining time percentage.
+   * @returns {string} CSS linear-gradient string
+   */
   const getTimerGradient = () => {
     if (progressPercentage > 83) {
       return `linear-gradient(135deg, ${COLORS.emerald} 0%, #059669 100%)`;
@@ -61,6 +68,14 @@ function Timer({
       return `linear-gradient(135deg, ${COLORS.rose} 0%, #E11D48 100%)`;
     }
   };
+
+  // Enhanced preset system
+  const PRESETS = [
+    { time: 1, label: "Quick", icon: "⚡", color: "#10B981", gradient: "linear-gradient(135deg, #10B981 0%, #059669 100%)" },
+    { time: 15, label: "Short", icon: "☕", color: "#F59E0B", gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)" },
+    { time: 25, label: "Focus", icon: "🎯", color: "#06B6D4", gradient: "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)" },
+    { time: 45, label: "Deep", icon: "🔥", color: "#F97316", gradient: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)" },
+  ];
 
   useEffect(() => {
     if (isRunning) {
@@ -418,9 +433,25 @@ function Timer({
                 textTransform: "uppercase",
                 letterSpacing: "1.5px",
                 transition: "all 0.3s ease",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
               }}
             >
-              {isRunning ? "FOCUS" : isPaused ? "PAUSED" : "READY"}
+              {isRunning && (
+                <span
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    background: getTimerColor(),
+                    display: "inline-block",
+                    animation: "pulse-dot 2s ease-in-out infinite",
+                  }}
+                />
+              )}
+              {isRunning ? "🎯 FOCUS" : isPaused ? "⏸ PAUSED" : "✓ READY"}
             </div>
             <div
               className="mt-1"
@@ -428,6 +459,10 @@ function Timer({
                 color: "var(--text-muted)",
                 fontSize: "0.7rem",
                 fontWeight: "600",
+                background: "var(--input-bg)",
+                padding: "4px 12px",
+                borderRadius: "12px",
+                display: "inline-block",
               }}
             >
               {Math.round(progressPercentage)}% remaining
@@ -640,12 +675,7 @@ function Timer({
               Quick Presets
             </div>
             <div className="d-flex gap-2 justify-content-center">
-              {[
-                { time: 1, color: "#10B981", textColor: "#FFFFFF" },
-                { time: 15, color: "#FBBF24", textColor: "#064E3B" },
-                { time: 25, color: "#06B6D4", textColor: "#FFFFFF" },
-                { time: 45, color: "#F97316", textColor: "#FFFFFF" },
-              ].map(({ time, color, textColor }) => (
+              {PRESETS.map(({ time, label, icon, gradient, color }) => (
                 <button
                   key={time}
                   onClick={() => {
@@ -654,25 +684,34 @@ function Timer({
                     setSeconds(0);
                   }}
                   style={{
-                    fontSize: "0.85rem",
+                    fontSize: "0.75rem",
                     fontWeight: "700",
-                    borderRadius: "10px",
+                    borderRadius: "12px",
                     flex: 1,
-                    background: color,
+                    background: gradient,
                     border: "none",
-                    color: textColor,
-                    padding: "8px",
+                    color: "#FFFFFF",
+                    padding: "10px 8px",
                     cursor: "pointer",
                     transition: "all 0.2s ease",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "4px",
+                    boxShadow: `0 2px 8px ${color}30`,
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = "scale(1.05)";
+                    e.target.style.transform = "translateY(-2px) scale(1.05)";
+                    e.target.style.boxShadow = `0 4px 12px ${color}50`;
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = "scale(1)";
+                    e.target.style.transform = "translateY(0) scale(1)";
+                    e.target.style.boxShadow = `0 2px 8px ${color}30`;
                   }}
                 >
-                  {time}m
+                  <span style={{ fontSize: "1.2rem" }}>{icon}</span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800" }}>{time}m</span>
+                  <span style={{ fontSize: "0.65rem", opacity: 0.9, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</span>
                 </button>
               ))}
             </div>

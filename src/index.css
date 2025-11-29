@@ -17,6 +17,13 @@
   --border-color: #D1FAE5;
   --input-bg: #F0FDF4;
   --input-focus: #ffffff;
+
+  /* Timer sizing variables */
+  --timer-size: 280px;
+  --timer-stroke: 14px;
+  --timer-font-size: 4rem;
+  --button-font-size: 1rem;
+  --preset-gap: 0.5rem;
 }
 
 [data-theme="dark"] {
@@ -108,5 +115,34 @@ h6 {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+/* Responsive design - Mobile */
+@media (max-width: 768px) {
+  :root {
+    --timer-size: 240px;
+    --timer-stroke: 12px;
+    --timer-font-size: 3rem;
+    --button-font-size: 0.9rem;
+    --preset-gap: 0.4rem;
+  }
+}
+
+/* Responsive design - Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --timer-size: 260px;
+    --timer-stroke: 13px;
+    --timer-font-size: 3.5rem;
+  }
+}
+
+/* Responsive design - Large Desktop */
+@media (min-width: 1440px) {
+  :root {
+    --timer-size: 320px;
+    --timer-stroke: 16px;
+    --timer-font-size: 4.5rem;
   }
 }
