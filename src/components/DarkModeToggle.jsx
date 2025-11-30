@@ -24,28 +24,24 @@ function DarkModeToggle() {
   };
 
   return (
-    <div className="d-flex justify-content-end mb-3">
-      <button
-        onClick={toggleDarkMode}
-        style={{
-          background: "rgba(255,255,255,0.2)",
-          border: "none",
-          borderRadius: "50%",
-          width: "50px",
-          height: "50px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          transition: "all 0.3s ease",
-          backdropFilter: "blur(10px)",
-        }}
-        onMouseEnter={(e) => (e.target.style.transform = "scale(1.1)")}
-        onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
-      >
-        {darkMode ? "☀️" : "🌙"}
-      </button>
-    </div>
+    <button
+      onClick={toggleDarkMode}
+      style={{
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        transition: "transform 0.2s ease",
+        fontSize: "24px",
+        color: darkMode ? "#CBD5E1" : "#64748B",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onMouseEnter={(e) => (e.target.style.transform = "scale(1.1)")}
+      onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+    >
+      {darkMode ? "☀️" : "🌙"}
+    </button>
   );
 }
 

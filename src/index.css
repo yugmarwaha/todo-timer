@@ -27,13 +27,13 @@
 }
 
 [data-theme="dark"] {
-  /* Dark mode colors - enhanced contrast and depth */
-  --bg-primary: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  /* Dark mode colors - neutral warm grays */
+  --bg-primary: #1c1917;
   --bg-secondary: rgba(22, 27, 34, 0.95);
   --text-primary: #f0f6fc;
   --text-secondary: #c9d1d9;
   --text-muted: #8b949e;
-  --card-bg: rgba(22, 27, 34, 0.95);
+  --card-bg: #292524;
   --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6);
   --primary-gradient: linear-gradient(135deg, #58a6ff 0%, #f78166 100%);

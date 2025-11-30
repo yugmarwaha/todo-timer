@@ -1,8 +1,19 @@
 import { Container } from "react-bootstrap";
+import { useNavigate } from "react-router";
 import Quotes from "../components/Quotes";
 import DarkModeToggle from "../components/DarkModeToggle";
 
 function Home() {
+  const navigate = useNavigate();
+
+  const handleStartTimer = () => {
+    navigate("/timer");
+  };
+
+  const handleViewTasks = () => {
+    navigate("/todo");
+  };
+
   return (
     <Container
       fluid
@@ -11,10 +22,9 @@ function Home() {
     >
       <Container className="pt-5">
         <div
-          className="text-center mb-4 p-3 d-flex flex-column justify-content-center align-items-center"
+          className="text-center mb-4 p-3 d-flex flex-column justify-content-center align-items-center hero-card"
           style={{
             minHeight: "200px",
-            background: "#FFFFFF",
             borderRadius: "8px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
             color: "#374151",
@@ -23,12 +33,19 @@ function Home() {
           <h1 className="display-3 fw-bold mb-3">
             <span style={{ fontSize: "3rem" }}>⏰</span> Todo Timer App
           </h1>
-          <p
-            className="lead mb-0"
-            style={{ fontSize: "1.2rem", opacity: 0.95 }}
-          >
+          <p className="hero-subtitle" style={{ fontSize: "1.2rem" }}>
             Boost your productivity with focused time management
           </p>
+          <div className="d-flex justify-content-center gap-3">
+            <button onClick={handleStartTimer} className="start-timer-btn">
+              <span>▶</span>
+              Start Timer
+            </button>
+            <button onClick={handleViewTasks} className="view-tasks-btn">
+              <span>☑</span>
+              View Tasks
+            </button>
+          </div>
         </div>
 
         <DarkModeToggle />

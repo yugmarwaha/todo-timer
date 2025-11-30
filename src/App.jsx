@@ -3,6 +3,7 @@ import { Routes, Route, NavLink } from "react-router";
 import Home from "./pages/Home";
 import TimerPage from "./pages/TimerPage";
 import TodoPage from "./pages/TodoPage";
+import DarkModeToggle from "./components/DarkModeToggle";
 import "./App.css";
 
 function App() {
@@ -10,8 +11,8 @@ function App() {
     <>
       <Navbar
         expand="lg"
+        className="navbar-custom"
         style={{
-          background: "#FFFFFF",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           borderBottom: "1px solid #E5E7EB",
           paddingLeft: "40px",
@@ -38,6 +39,9 @@ function App() {
               Todo List
             </Nav.Link>
           </Nav>
+          <div className="ms-auto">
+            <DarkModeToggle />
+          </div>
         </Navbar.Collapse>
       </Navbar>
       <Routes>
