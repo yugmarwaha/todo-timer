@@ -5,7 +5,7 @@ function Timer({
   compact = false,
   showHero = false,
   initialTime = 25,
-  onTimerComplete = null
+  onTimerComplete = null,
 }) {
   const [initialMinutes, setInitialMinutes] = useState(initialTime);
   const [minutes, setMinutes] = useState(initialTime);
@@ -39,12 +39,17 @@ function Timer({
    */
   const getTimerColor = () => {
     const color =
-      progressPercentage > 83 ? COLORS.emerald :  // 100-83%: emerald
-      progressPercentage > 66 ? COLORS.cyan :     // 83-66%: cyan
-      progressPercentage > 50 ? COLORS.sky :      // 66-50%: sky
-      progressPercentage > 33 ? COLORS.amber :    // 50-33%: amber
-      progressPercentage > 16 ? COLORS.orange :   // 33-16%: orange
-      COLORS.rose;                                // 16-0%: rose
+      progressPercentage > 83
+        ? COLORS.emerald // 100-83%: emerald
+        : progressPercentage > 66
+        ? COLORS.cyan // 83-66%: cyan
+        : progressPercentage > 50
+        ? COLORS.sky // 66-50%: sky
+        : progressPercentage > 33
+        ? COLORS.amber // 50-33%: amber
+        : progressPercentage > 16
+        ? COLORS.orange // 33-16%: orange
+        : COLORS.rose; // 16-0%: rose
 
     return color;
   };
@@ -71,10 +76,34 @@ function Timer({
 
   // Enhanced preset system
   const PRESETS = [
-    { time: 1, label: "Quick", icon: "⚡", color: "#10B981", gradient: "linear-gradient(135deg, #10B981 0%, #059669 100%)" },
-    { time: 5, label: "Break", icon: "☕", color: "#F59E0B", gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)" },
-    { time: 25, label: "Focus", icon: "🎯", color: "#3B82F6", gradient: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)" },
-    { time: 45, label: "Deep", icon: "🔥", color: "#EF4444", gradient: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)" },
+    {
+      time: 1,
+      label: "Quick",
+      icon: "⚡",
+      color: "#10B981",
+      gradient: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
+    },
+    {
+      time: 5,
+      label: "Break",
+      icon: "☕",
+      color: "#F59E0B",
+      gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
+    },
+    {
+      time: 25,
+      label: "Focus",
+      icon: "🎯",
+      color: "#3B82F6",
+      gradient: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+    },
+    {
+      time: 45,
+      label: "Deep",
+      icon: "🔥",
+      color: "#EF4444",
+      gradient: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+    },
   ];
 
   useEffect(() => {
@@ -257,7 +286,9 @@ function Timer({
             width: size,
             height: size,
             margin: "0 auto",
-            animation: isRunning ? "ring-pulse 3s ease-in-out infinite" : "none",
+            animation: isRunning
+              ? "ring-pulse 3s ease-in-out infinite"
+              : "none",
           }}
         >
           <svg
@@ -360,8 +391,13 @@ function Timer({
                 fontFamily: "'Inter', sans-serif",
                 letterSpacing: "1px",
                 lineHeight: 1,
-                color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#F5F5F4' : getTimerColor(),
-                animation: isRunning ? "breathe 4s ease-in-out infinite" : "none",
+                color:
+                  document.documentElement.getAttribute("data-theme") === "dark"
+                    ? "#F5F5F4"
+                    : getTimerColor(),
+                animation: isRunning
+                  ? "breathe 4s ease-in-out infinite"
+                  : "none",
               }}
             >
               {String(minutes).padStart(2, "0")}
@@ -400,8 +436,12 @@ function Timer({
                   border: "none",
                   padding: "8px 12px",
                 }}
-                onMouseEnter={(e) => (e.target.style.backgroundColor = "rgba(16, 185, 129, 0.1)")}
-                onMouseLeave={(e) => (e.target.style.backgroundColor = "transparent")}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "rgba(16, 185, 129, 0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "transparent")
+                }
               >
                 {initialMinutes} min
               </div>
@@ -559,8 +599,19 @@ function Timer({
                   }}
                 >
                   <span style={{ fontSize: "1.2rem" }}>{icon}</span>
-                  <span style={{ fontSize: "0.85rem", fontWeight: "800" }}>{time}m</span>
-                  <span style={{ fontSize: "0.65rem", opacity: 0.9, textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</span>
+                  <span style={{ fontSize: "0.85rem", fontWeight: "800" }}>
+                    {time}m
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "0.65rem",
+                      opacity: 0.9,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    {label}
+                  </span>
                 </button>
               ))}
             </div>
