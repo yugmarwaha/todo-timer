@@ -49,3 +49,20 @@
     font-size: 2rem;
   }
 }
+
+/* Dark mode styles */
+[data-theme="dark"] .timer-hero {
+  background: #292524;
+}
+
+[data-theme="dark"] .timer-title {
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: #F5F5F4;
+  background-clip: initial;
+  color: #F5F5F4;
+}
+
+[data-theme="dark"] .timer-subtitle {
+  color: #A8A29E;
+}

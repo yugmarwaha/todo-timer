@@ -72,9 +72,9 @@ function Timer({
   // Enhanced preset system
   const PRESETS = [
     { time: 1, label: "Quick", icon: "⚡", color: "#10B981", gradient: "linear-gradient(135deg, #10B981 0%, #059669 100%)" },
-    { time: 15, label: "Short", icon: "☕", color: "#F59E0B", gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)" },
-    { time: 25, label: "Focus", icon: "🎯", color: "#06B6D4", gradient: "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)" },
-    { time: 45, label: "Deep", icon: "🔥", color: "#F97316", gradient: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)" },
+    { time: 5, label: "Break", icon: "☕", color: "#F59E0B", gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)" },
+    { time: 25, label: "Focus", icon: "🎯", color: "#3B82F6", gradient: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)" },
+    { time: 45, label: "Deep", icon: "🔥", color: "#EF4444", gradient: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)" },
   ];
 
   useEffect(() => {
@@ -249,30 +249,6 @@ function Timer({
       }}
     >
       <Card.Body className="p-4 d-flex flex-column align-items-center">
-        {/* Header */}
-        <div
-          className="text-center mb-4"
-          style={{
-            width: "100%",
-            padding: "8px 16px",
-            background:
-              "linear-gradient(135deg, #06B6D4 0%, #14B8A6 50%, #10B981 100%)",
-            borderRadius: "12px",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              letterSpacing: "1.5px",
-              textTransform: "uppercase",
-            }}
-          >
-            Focus Timer
-          </div>
-        </div>
-
         {/* Circular Timer */}
         <div
           className="mb-4"
@@ -287,6 +263,7 @@ function Timer({
           <svg
             width={size}
             height={size}
+            className="timer-ring"
             style={{
               position: "absolute",
               top: 0,
@@ -376,182 +353,59 @@ function Timer({
               width: "100%",
             }}
           >
+            <div
+              style={{
+                fontSize: "4rem",
+                fontWeight: "900",
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: "1px",
+                lineHeight: 1,
+                color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#F5F5F4' : getTimerColor(),
+                animation: isRunning ? "breathe 4s ease-in-out infinite" : "none",
+              }}
+            >
+              {String(minutes).padStart(2, "0")}
+              <span
+                style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
+              >
+                :
+              </span>
+              {String(seconds).padStart(2, "0")}
+            </div>
+          </div>
+        </div>
+
+        {/* Editable timer input */}
+        {!isRunning && !isPaused && (
+          <div className="text-center mb-3">
             {isEditingTime ? (
               <input
-                type="text"
+                type="number"
+                min="1"
+                max="60"
                 value={editTimeValue}
                 onChange={handleTimeEdit}
                 onBlur={handleTimeEditBlur}
                 onKeyDown={handleTimeEditKeyDown}
                 autoFocus
-                placeholder="Min"
-                style={{
-                  fontSize: "4rem",
-                  fontWeight: "900",
-                  fontFamily: "'Inter', sans-serif",
-                  color: getTimerColor(),
-                  background: "transparent",
-                  border: "none",
-                  outline: `3px solid ${getTimerColor()}`,
-                  borderRadius: "12px",
-                  textAlign: "center",
-                  width: "180px",
-                  padding: "8px 16px",
-                  letterSpacing: "1px",
-                  lineHeight: 1,
-                }}
+                placeholder="25"
+                className="timer-input"
               />
             ) : (
               <div
                 onClick={handleTimeClick}
+                className="timer-input"
                 style={{
-                  fontSize: "4rem",
-                  fontWeight: "900",
-                  fontFamily: "'Inter', sans-serif",
-                  letterSpacing: "1px",
-                  lineHeight: 1,
-                  color: getTimerColor(),
-                  cursor: !isRunning && !isPaused ? "pointer" : "default",
-                  animation: isRunning ? "breathe 4s ease-in-out infinite" : "none",
+                  cursor: "pointer",
+                  border: "none",
+                  padding: "8px 12px",
                 }}
+                onMouseEnter={(e) => (e.target.style.backgroundColor = "rgba(16, 185, 129, 0.1)")}
+                onMouseLeave={(e) => (e.target.style.backgroundColor = "transparent")}
               >
-                {String(minutes).padStart(2, "0")}
-                <span
-                  style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
-                >
-                  :
-                </span>
-                {String(seconds).padStart(2, "0")}
+                {initialMinutes} min
               </div>
             )}
-            <div
-              className="mt-2"
-              style={{
-                color: getTimerColor(),
-                fontSize: "0.8rem",
-                fontWeight: "700",
-                textTransform: "uppercase",
-                letterSpacing: "1.5px",
-                transition: "all 0.3s ease",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-              }}
-            >
-              {isRunning && (
-                <span
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: getTimerColor(),
-                    display: "inline-block",
-                    animation: "pulse-dot 2s ease-in-out infinite",
-                  }}
-                />
-              )}
-              {isRunning ? "🎯 FOCUS" : isPaused ? "⏸ PAUSED" : "✓ READY"}
-            </div>
-            <div
-              className="mt-1"
-              style={{
-                color: "var(--text-muted)",
-                fontSize: "0.7rem",
-                fontWeight: "600",
-                background: "var(--input-bg)",
-                padding: "4px 12px",
-                borderRadius: "12px",
-                display: "inline-block",
-              }}
-            >
-              {Math.round(progressPercentage)}% remaining
-            </div>
-          </div>
-        </div>
-
-        {/* Time adjustment controls */}
-        {!isRunning && !isPaused && (
-          <div className="mb-3 w-100">
-            <div className="d-flex align-items-center justify-content-center gap-3">
-              <button
-                onClick={() => adjustTime(-5)}
-                disabled={initialMinutes <= 1}
-                style={{
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  padding: 0,
-                  fontSize: "1.6rem",
-                  fontWeight: "300",
-                  border: "none",
-                  background: "var(--input-bg)",
-                  color: "var(--text-primary)",
-                  cursor: initialMinutes <= 1 ? "not-allowed" : "pointer",
-                  opacity: initialMinutes <= 1 ? 0.4 : 1,
-                  transition: "all 0.2s ease",
-                }}
-                onMouseEnter={(e) => {
-                  if (initialMinutes > 1)
-                    e.target.style.background = getTimerColor();
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = "var(--input-bg)";
-                }}
-              >
-                −
-              </button>
-              <div
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "800",
-                  color: "var(--text-primary)",
-                  minWidth: "90px",
-                  textAlign: "center",
-                  padding: "10px 20px",
-                  borderRadius: "14px",
-                  background: "var(--input-bg)",
-                }}
-              >
-                {initialMinutes}
-                <span
-                  style={{
-                    fontSize: "1.1rem",
-                    fontWeight: "600",
-                    marginLeft: "4px",
-                  }}
-                >
-                  min
-                </span>
-              </div>
-              <button
-                onClick={() => adjustTime(5)}
-                disabled={initialMinutes >= 60}
-                style={{
-                  borderRadius: "50%",
-                  width: "40px",
-                  height: "40px",
-                  padding: 0,
-                  fontSize: "1.6rem",
-                  fontWeight: "300",
-                  border: "none",
-                  background: "var(--input-bg)",
-                  color: "var(--text-primary)",
-                  cursor: initialMinutes >= 60 ? "not-allowed" : "pointer",
-                  opacity: initialMinutes >= 60 ? 0.4 : 1,
-                  transition: "all 0.2s ease",
-                }}
-                onMouseEnter={(e) => {
-                  if (initialMinutes < 60)
-                    e.target.style.background = getTimerColor();
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = "var(--input-bg)";
-                }}
-              >
-                +
-              </button>
-            </div>
           </div>
         )}
 
@@ -562,32 +416,27 @@ function Timer({
               onClick={handleStart}
               style={{
                 width: "100%",
-                fontSize: "1rem",
+                fontSize: "18px",
                 fontWeight: "700",
-                padding: "10px 20px",
+                padding: "16px 20px",
+                height: "56px",
                 textTransform: "uppercase",
                 letterSpacing: "1.5px",
-                background: getTimerGradient(),
+                background: "#10B981",
                 border: "none",
                 borderRadius: "12px",
                 color: "#FFFFFF",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
-                boxShadow: `0 4px 12px ${getTimerColor()}40`,
+                boxShadow: "0 4px 12px rgba(16, 185, 129, 0.4)",
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = `0 6px 20px ${getTimerColor()}60`;
+                e.target.style.boxShadow = "0 6px 20px rgba(16, 185, 129, 0.6)";
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = `0 4px 12px ${getTimerColor()}40`;
-              }}
-              onMouseDown={(e) => {
-                e.target.style.animation = "button-press 0.2s ease";
-              }}
-              onMouseUp={(e) => {
-                e.target.style.animation = "none";
+                e.target.style.boxShadow = "0 4px 12px rgba(16, 185, 129, 0.4)";
               }}
             >
               ▶ START

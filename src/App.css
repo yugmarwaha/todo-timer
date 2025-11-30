@@ -236,6 +236,48 @@
   color: #cbd5e1 !important;
 }
 
+/* Timer input styling */
+.timer-input {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: #10B981 !important;
+  background: transparent !important;
+  border: 2px solid #10B981 !important;
+  border-radius: 8px !important;
+  text-align: center !important;
+  width: 80px !important;
+  padding: 8px 12px !important;
+  outline: none !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.timer-input:hover {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+[data-theme="dark"] .timer-input {
+  color: #F5F5F4 !important;
+  border-color: #44403C !important;
+}
+
+[data-theme="dark"] .timer-input:hover {
+  background-color: rgba(245, 245, 244, 0.1) !important;
+}
+
+/* Timer display styling */
+.timer-display {
+  color: inherit;
+}
+
+[data-theme="dark"] .timer-display {
+  color: #F5F5F4 !important;
+}
+
+/* Timer ring glow effect in dark mode */
+[data-theme="dark"] .timer-ring {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
 .form-control:focus {
   border-color: #667eea !important;
   box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15) !important;
