@@ -18,7 +18,11 @@ function App() {
           paddingRight: "40px",
         }}
       >
-        <Navbar.Brand as={NavLink} to="/" style={{ fontWeight: "bold", marginRight: "24px" }}>
+        <Navbar.Brand
+          as={NavLink}
+          to="/"
+          style={{ fontWeight: "bold", marginRight: "24px" }}
+        >
           <span style={{ fontSize: "1.5rem" }}>⏰</span> Todo Timer App
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

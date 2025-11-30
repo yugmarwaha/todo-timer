@@ -17,7 +17,7 @@ function TodoPage() {
             background: "#FFFFFF",
             borderRadius: "8px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            color: "#374151"
+            color: "#374151",
           }}
         >
           <h1 className="display-3 fw-bold mb-3">

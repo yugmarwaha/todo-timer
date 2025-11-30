@@ -121,7 +121,7 @@
 
 /* Navigation link styling */
 .nav-link-custom {
-  color: #64748B !important;
+  color: #64748b !important;
   font-weight: 500 !important;
   letter-spacing: 0.025em !important;
   padding: 8px 16px !important;
@@ -134,14 +134,14 @@
 }
 
 .nav-link-custom:hover {
-  color: #0F172A !important;
+  color: #0f172a !important;
   transform: translateY(-1px);
 }
 
 .nav-link-custom.active {
-  color: #0F172A !important;
+  color: #0f172a !important;
   font-weight: 600 !important;
-  border-bottom: 2px solid #0F172A;
+  border-bottom: 2px solid #0f172a;
 }
 
 .form-control:focus {
