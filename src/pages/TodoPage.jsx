@@ -1,6 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
 import TodoList from "../components/TodoList";
-import DarkModeToggle from "../components/DarkModeToggle";
 
 function TodoPage() {
   return (
@@ -14,10 +13,10 @@ function TodoPage() {
           className="text-center mb-4 p-3 d-flex flex-column justify-content-center align-items-center"
           style={{
             minHeight: "200px",
-            background: "#FFFFFF",
+            background: "var(--card-bg)",
             borderRadius: "8px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            color: "#374151",
+            boxShadow: "var(--card-shadow)",
+            color: "var(--text-primary)",
           }}
         >
           <h1 className="display-3 fw-bold mb-3">
@@ -30,8 +29,6 @@ function TodoPage() {
             Organize your tasks and stay productive
           </p>
         </div>
-
-        <DarkModeToggle />
 
         <Row className="justify-content-center">
           <Col lg={8} md={10}>

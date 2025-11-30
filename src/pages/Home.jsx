@@ -38,7 +38,7 @@ function Home() {
           <div className="d-flex justify-content-center gap-3">
             <button onClick={handleStartTimer} className="start-timer-btn">
               <span>▶</span>
-              Start Timer
+              Timer
             </button>
             <button onClick={handleViewTasks} className="view-tasks-btn">
               <span>☑</span>

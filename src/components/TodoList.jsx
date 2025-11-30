@@ -271,7 +271,7 @@ function TodoList() {
                           height: "32px",
                           border: "none",
                           borderRadius: "8px",
-                          background: "white",
+                          background: "var(--input-bg)",
                           color: COLORS.red,
                           fontSize: "1.2rem",
                           cursor: "pointer",
@@ -283,7 +283,7 @@ function TodoList() {
                           e.target.style.color = "white";
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.background = "white";
+                          e.target.style.background = "var(--input-bg)";
                           e.target.style.color = COLORS.red;
                         }}
                       >
@@ -321,7 +321,7 @@ function TodoList() {
                         gap: "12px",
                         padding: "12px 16px",
                         marginBottom: "8px",
-                        background: "var(--accent-yellow)",
+                        background: "var(--input-bg)",
                         borderRadius: "12px",
                         opacity: 0.7,
                         transition: "all 0.3s ease",
@@ -357,7 +357,7 @@ function TodoList() {
                           height: "32px",
                           border: "none",
                           borderRadius: "8px",
-                          background: "white",
+                          background: "var(--input-bg)",
                           color: COLORS.red,
                           fontSize: "1.2rem",
                           cursor: "pointer",
@@ -369,7 +369,7 @@ function TodoList() {
                           e.target.style.color = "white";
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.background = "white";
+                          e.target.style.background = "var(--input-bg)";
                           e.target.style.color = COLORS.red;
                         }}
                       >

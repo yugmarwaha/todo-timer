@@ -44,8 +44,8 @@
   --accent-orange: #f78166;
   --accent-red: #f85149;
   --border-color: #30363d;
-  --input-bg: #21262d;
-  --input-focus: #30363d;
+  --input-bg: #373a40; /* Made lighter for better contrast in dark mode */
+  --input-focus: #484c52; /* Adjusted focus color to match */
 }
 
 * {
