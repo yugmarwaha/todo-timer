@@ -4,7 +4,10 @@ import { useTimer } from "../context/TimerContext";
 
 function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
   const {
+    initialHours,
     initialMinutes,
+    initialSeconds,
+    hours,
     minutes,
     seconds,
     isRunning,
@@ -17,11 +20,14 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
   } = useTimer();
 
   const [isEditingTime, setIsEditingTime] = useState(false);
-  const [editTimeValue, setEditTimeValue] = useState("");
+  const [editHours, setEditHours] = useState("");
+  const [editMinutes, setEditMinutes] = useState("");
+  const [editSeconds, setEditSeconds] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const totalSeconds = initialMinutes * 60;
-  const currentSeconds = minutes * 60 + seconds;
+  const totalSeconds =
+    initialHours * 3600 + initialMinutes * 60 + initialSeconds;
+  const currentSeconds = hours * 3600 + minutes * 60 + seconds;
   const progressPercentage = (currentSeconds / totalSeconds) * 100;
 
   // Muted color palette for minimal design
@@ -173,15 +179,30 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
   const handleTimeClick = () => {
     if (!isRunning && !isPaused) {
       setIsEditingTime(true);
-      setEditTimeValue(String(initialMinutes));
+      setEditHours(String(initialHours));
+      setEditMinutes(String(initialMinutes));
+      setEditSeconds(String(initialSeconds));
     }
   };
 
-  const handleTimeEdit = (e) => {
+  const handleHoursEdit = (e) => {
     const value = e.target.value;
-    // Only allow numbers
-    if (value === "" || /^\d+$/.test(value)) {
-      setEditTimeValue(value);
+    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 23)) {
+      setEditHours(value);
+    }
+  };
+
+  const handleMinutesEdit = (e) => {
+    const value = e.target.value;
+    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 59)) {
+      setEditMinutes(value);
+    }
+  };
+
+  const handleSecondsEdit = (e) => {
+    const value = e.target.value;
+    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 59)) {
+      setEditSeconds(value);
     }
   };
 
@@ -194,19 +215,22 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
       applyEditedTime();
     } else if (e.key === "Escape") {
       setIsEditingTime(false);
-      setEditTimeValue("");
+      setEditHours("");
+      setEditMinutes("");
+      setEditSeconds("");
     }
   };
 
   const applyEditedTime = () => {
-    const numValue = parseInt(editTimeValue, 10);
-    if (!isNaN(numValue) && numValue >= 1) {
-      // Cap at 60 minutes
-      const clampedValue = Math.min(numValue, 60);
-      setTime(clampedValue);
-    }
+    const h = parseInt(editHours, 10) || 0;
+    const m = parseInt(editMinutes, 10) || 0;
+    const s = parseInt(editSeconds, 10) || 0;
+
+    setTime(h, m, s);
     setIsEditingTime(false);
-    setEditTimeValue("");
+    setEditHours("");
+    setEditMinutes("");
+    setEditSeconds("");
   };
 
   // SVG circle properties
@@ -315,7 +339,7 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
           >
             <div
               style={{
-                fontSize: "4rem",
+                fontSize: "3rem",
                 fontWeight: "900",
                 fontFamily: "'Inter', sans-serif",
                 letterSpacing: "1px",
@@ -326,6 +350,12 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
                   : "none",
               }}
             >
+              {String(hours).padStart(2, "0")}
+              <span
+                style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
+              >
+                :
+              </span>
               {String(minutes).padStart(2, "0")}
               <span
                 style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
@@ -341,35 +371,133 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
         {!isRunning && !isPaused && (
           <div className="text-center mb-3">
             {isEditingTime ? (
-              <input
-                type="number"
-                min="1"
-                max="60"
-                value={editTimeValue}
-                onChange={handleTimeEdit}
-                onBlur={handleTimeEditBlur}
-                onKeyDown={handleTimeEditKeyDown}
-                autoFocus
-                placeholder="25"
-                className="timer-input"
-              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "8px",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div
+                  style={{ display: "flex", gap: "8px", alignItems: "center" }}
+                >
+                  <input
+                    type="number"
+                    min="0"
+                    max="23"
+                    value={editHours}
+                    onChange={handleHoursEdit}
+                    onKeyDown={handleTimeEditKeyDown}
+                    autoFocus
+                    placeholder="0"
+                    className="timer-input"
+                    style={{ width: "60px !important" }}
+                  />
+                  <span
+                    style={{ fontSize: "1.5rem", color: "var(--text-muted)" }}
+                  >
+                    :
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    value={editMinutes}
+                    onChange={handleMinutesEdit}
+                    onKeyDown={handleTimeEditKeyDown}
+                    placeholder="0"
+                    className="timer-input"
+                    style={{ width: "60px !important" }}
+                  />
+                  <span
+                    style={{ fontSize: "1.5rem", color: "var(--text-muted)" }}
+                  >
+                    :
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    value={editSeconds}
+                    onChange={handleSecondsEdit}
+                    onKeyDown={handleTimeEditKeyDown}
+                    placeholder="0"
+                    className="timer-input"
+                    style={{ width: "60px !important" }}
+                  />
+                </div>
+                <button
+                  onClick={applyEditedTime}
+                  style={{
+                    padding: "8px 16px",
+                    fontSize: "0.9rem",
+                    fontWeight: "600",
+                    background: "var(--accent-blue)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow =
+                      "0 4px 12px rgba(96, 165, 250, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                  }}
+                >
+                  ✓ Set
+                </button>
+              </div>
             ) : (
               <div
                 onClick={handleTimeClick}
-                className="timer-input"
                 style={{
                   cursor: "pointer",
                   border: "none",
-                  padding: "8px 12px",
+                  padding: "14px 20px",
+                  width: "240px",
+                  minHeight: "70px",
+                  margin: "0 auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "var(--text-primary)",
+                  background: "var(--input-bg)",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  transition: "background-color 0.2s ease",
                 }}
                 onMouseEnter={(e) =>
                   (e.target.style.backgroundColor = "rgba(16, 185, 129, 0.1)")
                 }
                 onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "transparent")
+                  (e.target.style.backgroundColor = "var(--input-bg)")
                 }
               >
-                {initialMinutes} <span className="timer-min-label">min</span>
+                {initialHours > 0 && (
+                  <div>
+                    {initialHours} <span className="timer-min-label">hr</span>
+                  </div>
+                )}
+                <div>
+                  {initialMinutes} <span className="timer-min-label">min</span>
+                </div>
+                {initialSeconds > 0 && (
+                  <div>
+                    {initialSeconds}{" "}
+                    <span className="timer-min-label">sec</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -525,7 +653,7 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
               {PRESETS.map(({ time, label, icon, gradient, color }) => (
                 <button
                   key={time}
-                  onClick={() => setTime(time)}
+                  onClick={() => setTime(0, time, 0)}
                   style={{
                     fontSize: "0.75rem",
                     fontWeight: "700",
