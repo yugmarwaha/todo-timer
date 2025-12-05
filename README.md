@@ -6,41 +6,48 @@ A modern, productivity-focused web application that combines task management wit
 
 ### 🕒 Timer
 
-- **Customizable Timer**: Set any duration from 1-60 minutes
+- **Customizable Timer**: Set any duration from 1-60 minutes with hours, minutes, and seconds precision
 - **Quick Presets**: Pre-configured timers for common intervals:
   - Quick (1 minute) ⚡
   - Break (5 minutes) ☕
   - Focus (25 minutes) 🎯
   - Deep Work (45 minutes) 🔥
-- **Visual Progress**: Circular progress ring with smooth animations
-- **Notifications**: Browser notifications when timer completes
+- **Visual Progress**: Circular progress ring with smooth animations and color-coded time remaining
+- **Audio Notifications**: Westminster chimes sound plays when timer completes
+- **Sound Control**: Stop sound button appears when audio is playing, with automatic sound stopping on pause/reset/start
 - **Persistent Timer**: Timer continues running when navigating between pages
-- **Dark Mode Support**: Seamless theme switching
+- **Dark Mode Support**: Seamless theme switching with visual adaptations
+- **Task Integration**: View your top 3 active tasks alongside the timer for focused productivity
 
 ### 📝 Todo List
 
-- **Task Management**: Add, complete, and delete tasks
-- **Progress Tracking**: Visual progress indicator showing completed vs total tasks
-- **Organized Display**: Active and completed tasks shown separately
+- **Full CRUD Operations**: Add, complete, edit, and delete tasks with intuitive controls
+- **Progress Tracking**: Visual progress indicator showing completed vs total tasks with percentage completion
+- **Organized Display**: Active and completed tasks shown separately with clear visual distinction
 - **Persistent Storage**: Tasks are saved to localStorage and persist across sessions
-- **Timer Integration**: View top 3 tasks alongside the timer for focused productivity
+- **Task Statistics**: Real-time display of completed/total task counts
+- **Timer Integration**: Top 3 tasks automatically displayed on timer page for productivity focus
 
 ### 🔥 Streak Tracking
 
-- **GitHub-Style Calendar**: Visual contribution calendar showing 365 days of activity
-- **Daily Completions**: Automatically tracks completed timer sessions
+- **GitHub-Style Calendar**: Visual contribution calendar showing 365 days of activity with heat map visualization
+- **Daily Completions**: Automatically tracks completed timer sessions with streak incrementation
 - **Streak Statistics**:
-  - Current streak (consecutive days)
-  - Longest streak ever
-  - Total completed sessions
-- **Color Intensity**: Visual heat map showing activity levels (0, 1-2, 3-5, 6+ completions)
-- **Persistent Data**: Streak data saved to localStorage
+  - Current streak (consecutive days with at least one completion)
+  - Longest streak ever achieved
+  - Total completed sessions across all time
+- **Color Intensity**: Visual heat map showing activity levels:
+  - Light: 1-2 completions per day
+  - Medium: 3-5 completions per day
+  - High: 6+ completions per day
+- **Persistent Data**: Streak data saved to localStorage with robust error handling
 
 ### 🌙 Dark Mode
 
-- **Theme Toggle**: Switch between light and dark themes
-- **Persistent Preference**: Your theme choice is saved locally
-- **Consistent Design**: All components adapt to the selected theme
+- **Theme Toggle**: Smooth transition between light and dark themes with sun/moon icon
+- **Persistent Preference**: Your theme choice is automatically saved and restored
+- **Consistent Design**: All components adapt seamlessly to the selected theme with optimized colors
+- **Glassmorphism Effects**: Enhanced visual effects in both light and dark modes
 
 ### 💡 Inspirational Quotes
 
@@ -49,12 +56,13 @@ A modern, productivity-focused web application that combines task management wit
 
 ## Tech Stack
 
-- **Frontend**: React 19
-- **Build Tool**: Vite
-- **Styling**: Bootstrap 5 + Custom CSS
-- **Routing**: React Router 7
-- **Icons**: React Icons
-- **Deployment**: GitHub Pages
+- **Frontend**: React 19.1.1 with modern hooks and context API
+- **Build Tool**: Vite 7.1.7 for fast development and optimized production builds
+- **Styling**: Bootstrap 5.3.8 + Custom CSS with CSS variables for theming
+- **Routing**: React Router 7.9.5 for client-side navigation
+- **Icons**: React Icons 5.5.0 for consistent iconography
+- **State Management**: React Context API with localStorage persistence
+- **Deployment**: GitHub Pages with custom domain support
 
 ## Getting Started
 
@@ -101,25 +109,63 @@ This project is configured for deployment to GitHub Pages. The build output goes
 ## Usage
 
 1. **Home Page**: View inspirational quotes and navigate to timer or todo features
-2. **Timer Page**: Set your desired focus duration and start the timer. View your top 3 tasks alongside the timer.
-3. **Todo Page**: Add tasks, mark them complete, and track your progress
-4. **Streak Page**: View your GitHub-style contribution calendar and track your productivity streaks
+2. **Timer Page**: Set your desired focus duration and start the timer. View your top 3 tasks alongside the timer. Audio notification plays when timer completes with option to stop sound.
+3. **Todo Page**: Add tasks, mark them complete, edit existing tasks, and track your progress with visual indicators
+4. **Streak Page**: View your GitHub-style contribution calendar and track your productivity streaks with detailed statistics
 
 ## Architecture
 
-The app uses React Context for global state management:
+The app uses React Context for global state management across four main contexts:
 
-- **TimerContext**: Manages timer state that persists across navigation
-- **TodoContext**: Manages todo list with localStorage persistence
-- **StreakContext**: Tracks daily completions with localStorage persistence
+- **TimerContext**: Manages timer state with audio controls, persists across navigation, handles sound playback
+- **TodoContext**: Manages todo list with localStorage persistence and CRUD operations
+- **StreakContext**: Tracks daily completions with localStorage persistence and streak calculations
+- **Theme Context**: Integrated into component state for dark mode management
 
 Services are abstracted for future database migration:
 
 - **streakService.js**: Handles streak data persistence (localStorage now, easily swappable to Firebase/Supabase)
 
-## Browser Notifications
+## Audio Features
 
-The timer feature uses browser notifications. When you first use the timer, your browser may ask for permission to show notifications. Granting permission will allow you to receive alerts when your timer completes.
+The timer includes audio notifications for completion:
+
+- Westminster chimes sound plays automatically when timer finishes
+- Red "🔇 STOP SOUND" button appears when sound is playing
+- Sound automatically stops when starting new timer, pausing, or resetting
+- Audio respects browser autoplay policies and user interaction requirements
+
+## Browser Compatibility
+
+- Modern browsers with ES6+ support
+- Audio playback requires user interaction (clicking start) due to browser autoplay policies
+- localStorage support for data persistence
+- CSS Grid and Flexbox for responsive layouts
+- Backdrop-filter support with fallbacks for older browsers
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── Timer.jsx       # Main timer component with audio
+│   ├── TodoList.jsx    # Todo management interface
+│   ├── Quotes.jsx      # Inspirational quotes display
+│   └── DarkModeToggle.jsx # Theme switching
+├── context/            # React Context providers
+│   ├── TimerContext.jsx # Timer state management
+│   ├── TodoContext.jsx  # Todo state management
+│   └── StreakContext.jsx # Streak tracking
+├── pages/              # Route components
+│   ├── Home.jsx        # Landing page
+│   ├── TimerPage.jsx   # Timer interface
+│   ├── TodoPage.jsx    # Todo management
+│   └── StreakPage.jsx  # Streak visualization
+├── services/           # Business logic abstraction
+│   └── streakService.js # Streak data operations
+└── assets/             # Static assets
+    └── sound/          # Audio files
+```
 
 ## Contributing
 
@@ -129,12 +175,10 @@ The timer feature uses browser notifications. When you first use the timer, your
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is part of CS571 coursework.
-
 ## Acknowledgments
 
+- Westminster chimes audio from Freesound.org (nightcustard)
 - Quotes sourced from various inspirational figures
-- Built with modern React and Vite
+- Built with modern React and Vite ecosystem
 - Styled with Bootstrap and custom CSS variables for theming
+- GitHub-style calendar inspired by contribution graphs
