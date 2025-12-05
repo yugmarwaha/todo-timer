@@ -13,10 +13,12 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
     isRunning,
     isPaused,
     justCompleted,
+    isSoundPlaying,
     handleStart,
     handlePause,
     handleReset,
     setTime,
+    stopSound,
   } = useTimer();
 
   const [isEditingTime, setIsEditingTime] = useState(false);
@@ -506,37 +508,75 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
         {/* Control buttons */}
         <div className="w-100 mb-3">
           {!isRunning && !isPaused ? (
-            <button
-              onClick={handleStart}
-              style={{
-                width: "100%",
-                fontSize: "18px",
-                fontWeight: "700",
-                padding: "16px 20px",
-                height: "56px",
-                textTransform: "uppercase",
-                letterSpacing: "1.5px",
-                background: getButtonBackground(),
-                border: "none",
-                borderRadius: "12px",
-                color: "#FFFFFF",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                boxShadow: getButtonShadow(),
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = getButtonHoverBackground();
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = getButtonHoverShadow();
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = getButtonBackground();
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = getButtonShadow();
-              }}
-            >
-              ▶ START
-            </button>
+            <>
+              {isSoundPlaying && (
+                <button
+                  onClick={stopSound}
+                  style={{
+                    width: "100%",
+                    fontSize: "16px",
+                    fontWeight: "700",
+                    padding: "14px 20px",
+                    height: "52px",
+                    textTransform: "uppercase",
+                    letterSpacing: "1.5px",
+                    background: "#EF4444",
+                    border: "none",
+                    borderRadius: "12px",
+                    color: "#FFFFFF",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)",
+                    marginBottom: "8px",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = "#DC2626";
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow =
+                      "0 4px 12px rgba(220, 38, 38, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "#EF4444";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow =
+                      "0 2px 8px rgba(239, 68, 68, 0.3)";
+                  }}
+                >
+                  🔇 STOP SOUND
+                </button>
+              )}
+              <button
+                onClick={handleStart}
+                style={{
+                  width: "100%",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  padding: "16px 20px",
+                  height: "56px",
+                  textTransform: "uppercase",
+                  letterSpacing: "1.5px",
+                  background: getButtonBackground(),
+                  border: "none",
+                  borderRadius: "12px",
+                  color: "#FFFFFF",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  boxShadow: getButtonShadow(),
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = getButtonHoverBackground();
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow = getButtonHoverShadow();
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = getButtonBackground();
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = getButtonShadow();
+                }}
+              >
+                ▶ START
+              </button>
+            </>
           ) : (
             <div className="d-flex gap-2">
               {isRunning ? (

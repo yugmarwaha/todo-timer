@@ -6,6 +6,7 @@ import {
   useRef,
   useCallback,
 } from "react";
+import timerSound from "../assets/sound/620584__nightcustard__six-oclock-westminster-chimes.mp3";
 
 const TimerContext = createContext(null);
 
@@ -26,8 +27,10 @@ export function TimerProvider({ children }) {
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [justCompleted, setJustCompleted] = useState(false);
+  const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const intervalRef = useRef(null);
   const timerFinishedRef = useRef(false);
+  const audioRef = useRef(null);
 
   // Timer tick logic
   useEffect(() => {
@@ -51,30 +54,21 @@ export function TimerProvider({ children }) {
                     // Reset celebration animation after 2 seconds
                     setTimeout(() => setJustCompleted(false), 2000);
 
-                    // Timer finished - add notification
-                    if (
-                      "Notification" in window &&
-                      Notification.permission === "granted"
-                    ) {
-                      new Notification("Timer Finished!", {
-                        body: "Your focus session is complete. Take a break!",
-                        icon: "/vite.svg",
-                      });
-                    } else if (
-                      "Notification" in window &&
-                      Notification.permission !== "denied"
-                    ) {
-                      Notification.requestPermission().then((permission) => {
-                        if (permission === "granted") {
-                          new Notification("Timer Finished!", {
-                            body: "Your focus session is complete. Take a break!",
-                            icon: "/vite.svg",
-                          });
-                        }
-                      });
+                    // Play timer completion sound
+                    if (audioRef.current) {
+                      audioRef.current.pause();
+                      audioRef.current.currentTime = 0;
                     }
-                    // Fallback alert
-                    alert("Timer finished! Great job on your focus session.");
+                    audioRef.current = new Audio(timerSound);
+                    setIsSoundPlaying(true);
+                    audioRef.current.play().catch((error) => {
+                      console.log("Could not play sound:", error);
+                      setIsSoundPlaying(false);
+                    });
+                    // Stop sound when it finishes playing
+                    audioRef.current.onended = () => {
+                      setIsSoundPlaying(false);
+                    };
 
                     // Trigger streak increment
                     if (onTimerCompleteCallback) {
@@ -115,6 +109,12 @@ export function TimerProvider({ children }) {
   }, [isRunning, initialHours, initialMinutes, initialSeconds]);
 
   const handleStart = useCallback(() => {
+    // Stop sound if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsSoundPlaying(false);
+    }
     // If starting from X:00:00, adjust to prevent immediate decrement
     if (seconds === 0) {
       if (minutes === 0) {
@@ -137,6 +137,12 @@ export function TimerProvider({ children }) {
   const handlePause = useCallback(() => {
     setIsRunning(false);
     setIsPaused(true);
+    // Stop sound if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsSoundPlaying(false);
+    }
   }, []);
 
   const handleReset = useCallback(() => {
@@ -145,6 +151,12 @@ export function TimerProvider({ children }) {
     setHours(initialHours);
     setMinutes(initialMinutes);
     setSeconds(initialSeconds);
+    // Stop sound if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsSoundPlaying(false);
+    }
   }, [initialHours, initialMinutes, initialSeconds]);
 
   const setTime = useCallback(
@@ -187,6 +199,14 @@ export function TimerProvider({ children }) {
     [isRunning, isPaused]
   );
 
+  const stopSound = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsSoundPlaying(false);
+    }
+  }, []);
+
   const value = {
     // State
     initialHours,
@@ -198,12 +218,14 @@ export function TimerProvider({ children }) {
     isRunning,
     isPaused,
     justCompleted,
+    isSoundPlaying,
     // Actions
     handleStart,
     handlePause,
     handleReset,
     setTime,
     adjustTime,
+    stopSound,
   };
 
   return (
