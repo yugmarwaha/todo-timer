@@ -1,10 +1,10 @@
 # Todo Timer App ⏰
 
-A modern, productivity-focused web application that combines task management with Pomodoro-style time tracking and streak visualization to help you stay focused and organized.
+A modern, productivity-focused web application that combines task management with timer-based time tracking and streak visualization to help you stay focused and organized.
 
 ## Features
 
-### 🕒 Pomodoro Timer
+### 🕒 Timer
 
 - **Customizable Timer**: Set any duration from 1-60 minutes
 - **Quick Presets**: Pre-configured timers for common intervals:

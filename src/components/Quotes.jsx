@@ -58,7 +58,6 @@ function Quotes() {
         transition: "all 0.5s ease",
       }}
     >
-      <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>💡</div>
       <blockquote
         style={{
           fontSize: "1.25rem",

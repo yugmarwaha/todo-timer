@@ -1,6 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import Timer from "../components/Timer";
+import Quotes from "../components/Quotes";
 import { useTodo } from "../context/TodoContext";
 import "./TimerPage.css";
 
@@ -15,9 +16,9 @@ function TimerPage() {
         <div className="timer-hero">
           <h1 className="timer-title">
             <span className="timer-icon">⏰</span>
-            Pomodoro Timer
+            Productivity Timer
           </h1>
-          <p className="timer-subtitle">Stay focused, stay productive</p>
+          <Quotes />
         </div>
 
         <Row className="justify-content-center">
