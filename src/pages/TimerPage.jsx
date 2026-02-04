@@ -1,9 +1,9 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import { FiEdit3 } from "react-icons/fi";
 import Timer from "../components/Timer";
 import Quotes from "../components/Quotes";
 import { useTodo } from "../context/TodoContext";
-import "./TimerPage.css";
 
 function TimerPage() {
   const navigate = useNavigate();
@@ -11,99 +11,49 @@ function TimerPage() {
   const topTasks = getTopTasks(3);
 
   return (
-    <div className="timer-page" style={{ background: "var(--bg-primary)" }}>
+    <div className="page-wrapper">
       <Container>
-        <div className="timer-hero">
-          <h1 className="timer-title">
-            <span className="timer-icon">⏰</span>
-            Productivity Timer
-          </h1>
-          <Quotes />
+        <div className="page-header">
+          <h1>Productivity Timer</h1>
+          <p>Set a timer and stay focused on what matters.</p>
         </div>
 
         <Row className="justify-content-center">
           <Col lg={6} md={8}>
-            <div className="timer-container">
-              <Timer showHero={true} />
+            <Timer />
+            <div className="mt-3">
+              <Quotes />
             </div>
           </Col>
 
           <Col lg={4} md={8} className="mt-4 mt-lg-0">
-            {/* Compact Task Summary */}
-            <div
-              style={{
-                background: "var(--card-bg)",
-                borderRadius: "20px",
-                boxShadow: "var(--card-shadow)",
-                padding: "1.5rem",
-                height: "100%",
-              }}
-            >
-              {/* Header */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "1rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "0.85rem",
-                    fontWeight: "700",
-                    color: "var(--text-secondary)",
-                    letterSpacing: "1px",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  📋 Current Tasks
-                </div>
+            {/* Task Summary Sidebar */}
+            <div className="card-modern" style={{ padding: "1.5rem" }}>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <span className="section-label">Current Tasks</span>
                 <button
+                  className="btn-accent d-flex align-items-center gap-1"
                   onClick={() => navigate("/todo")}
-                  style={{
-                    fontSize: "0.75rem",
-                    fontWeight: "600",
-                    padding: "6px 12px",
-                    background: "var(--accent-blue, #60A5FA)",
-                    border: "none",
-                    borderRadius: "8px",
-                    color: "#fff",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow =
-                      "0 4px 12px rgba(96, 165, 250, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
-                  }}
+                  style={{ padding: "0.375rem 0.75rem", fontSize: "0.75rem" }}
                 >
-                  Edit Tasks
+                  <FiEdit3 size={12} />
+                  Edit
                 </button>
               </div>
 
-              {/* Task List */}
               {topTasks.length === 0 ? (
                 <div
+                  className="text-center py-4"
                   style={{
-                    textAlign: "center",
-                    padding: "2rem 1rem",
                     background: "var(--input-bg)",
-                    borderRadius: "12px",
-                    border: "2px dashed var(--border-color)",
+                    borderRadius: "10px",
+                    border: "1px dashed var(--border-color)",
                   }}
                 >
-                  <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
-                    ✅
-                  </div>
                   <p
                     style={{
                       color: "var(--text-muted)",
-                      fontWeight: "500",
+                      fontWeight: 500,
                       margin: 0,
                       fontSize: "0.85rem",
                     }}
@@ -112,24 +62,16 @@ function TimerPage() {
                   </p>
                 </div>
               ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "8px",
-                  }}
-                >
+                <div className="d-flex flex-column gap-2">
                   {topTasks.map((task) => (
                     <div
                       key={task.id}
+                      className="d-flex align-items-center gap-2"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                        padding: "10px 12px",
+                        padding: "0.625rem 0.75rem",
                         background: "var(--input-bg)",
-                        borderRadius: "10px",
-                        transition: "all 0.2s ease",
+                        borderRadius: "8px",
+                        border: "1px solid var(--border-color)",
                       }}
                     >
                       <input
@@ -138,22 +80,22 @@ function TimerPage() {
                         onChange={() => toggleTodo(task.id)}
                         aria-label={`Toggle task: ${task.text}`}
                         style={{
-                          width: "18px",
-                          height: "18px",
+                          width: 16,
+                          height: 16,
                           cursor: "pointer",
-                          accentColor: "var(--accent-blue, #60A5FA)",
+                          accentColor: "var(--accent)",
                           flexShrink: 0,
                         }}
                       />
                       <span
                         style={{
                           flex: 1,
-                          color: "var(--text-primary)",
-                          fontWeight: "500",
-                          fontSize: "0.95rem",
+                          fontWeight: 500,
+                          fontSize: "0.875rem",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
+                          color: "var(--text-primary)",
                         }}
                       >
                         {task.text}
@@ -161,15 +103,14 @@ function TimerPage() {
                     </div>
                   ))}
 
-                  {/* Show remaining count if more than 3 */}
                   {activeTodos.length > 3 && (
                     <div
                       style={{
                         textAlign: "center",
-                        padding: "8px",
+                        padding: "0.375rem",
                         color: "var(--text-muted)",
-                        fontSize: "0.8rem",
-                        fontWeight: "500",
+                        fontSize: "0.75rem",
+                        fontWeight: 500,
                       }}
                     >
                       +{activeTodos.length - 3} more task

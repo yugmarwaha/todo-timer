@@ -1,14 +1,14 @@
 import { Container } from "react-bootstrap";
 import { useStreak } from "../context/StreakContext";
-import { generateDateRange, formatDateKey } from "../services/streakService";
+import { generateDateRange } from "../services/streakService";
 import { useMemo, useState, useEffect } from "react";
+import { FiTrendingUp, FiAward, FiZap } from "react-icons/fi";
 
 function StreakPage() {
   const { streakData, currentStreak, longestStreak, totalCompletions } =
     useStreak();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Watch for theme changes
   useEffect(() => {
     const checkTheme = () => {
       const theme = document.documentElement.getAttribute("data-theme");
@@ -23,34 +23,29 @@ function StreakPage() {
     return () => observer.disconnect();
   }, []);
 
-  // Generate 365 days of dates
   const dateRange = useMemo(() => generateDateRange(365), []);
 
-  // Color intensity based on completion count
   const getColor = (count) => {
     if (isDarkMode) {
-      if (count === 0) return "#161b22"; // Empty - dark background
-      if (count <= 2) return "#0e4429"; // Light intensity
-      if (count <= 5) return "#006d32"; // Medium intensity
-      return "#26a641"; // Full intensity
+      if (count === 0) return "#1e293b";
+      if (count <= 2) return "#312e81";
+      if (count <= 5) return "#4338ca";
+      return "#6366f1";
     } else {
-      if (count === 0) return "#ebedf0"; // Empty - light background
-      if (count <= 2) return "#9be9a8"; // Light intensity
-      if (count <= 5) return "#40c463"; // Medium intensity
-      return "#216e39"; // Full intensity
+      if (count === 0) return "#f1f5f9";
+      if (count <= 2) return "#c7d2fe";
+      if (count <= 5) return "#818cf8";
+      return "#6366f1";
     }
   };
 
-  // Group dates by week for grid layout
   const weeks = useMemo(() => {
     const result = [];
     let currentWeek = [];
 
-    // Find the first Sunday to start the grid
     const firstDate = dateRange[0].date;
-    const firstDayOfWeek = firstDate.getDay(); // 0 = Sunday
+    const firstDayOfWeek = firstDate.getDay();
 
-    // Add empty cells for days before the first date
     for (let i = 0; i < firstDayOfWeek; i++) {
       currentWeek.push(null);
     }
@@ -64,7 +59,6 @@ function StreakPage() {
       }
     }
 
-    // Add remaining days
     if (currentWeek.length > 0) {
       result.push(currentWeek);
     }
@@ -72,7 +66,6 @@ function StreakPage() {
     return result;
   }, [dateRange, streakData]);
 
-  // Get month labels for the grid
   const monthLabels = useMemo(() => {
     const labels = [];
     let lastMonth = -1;
@@ -100,157 +93,77 @@ function StreakPage() {
   const cellSize = 12;
   const cellGap = 3;
 
+  const stats = [
+    {
+      icon: <FiZap size={20} />,
+      value: currentStreak,
+      label: "Current Streak",
+      color: "var(--warning)",
+    },
+    {
+      icon: <FiAward size={20} />,
+      value: longestStreak,
+      label: "Longest Streak",
+      color: "var(--success)",
+    },
+    {
+      icon: <FiTrendingUp size={20} />,
+      value: totalCompletions,
+      label: "Total Sessions",
+      color: "var(--accent)",
+    },
+  ];
+
   return (
-    <Container
-      fluid
-      className="min-vh-100 pb-5"
-      style={{ background: "var(--bg-primary)" }}
-    >
-      <Container className="pt-5">
-        {/* Hero Section */}
-        <div
-          className="text-center mb-4 p-4"
-          style={{
-            background: "var(--card-bg)",
-            borderRadius: "16px",
-            boxShadow: "var(--card-shadow)",
-          }}
-        >
-          <h1
-            className="display-4 fw-bold mb-2"
-            style={{ color: "var(--text-primary)" }}
-          >
-            <span style={{ fontSize: "2.5rem" }}>🔥</span> Focus Streak
-          </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
-            Track your daily focus sessions
-          </p>
+    <div className="page-wrapper">
+      <Container>
+        <div className="page-header">
+          <h1>Focus Streak</h1>
+          <p>Track your daily focus sessions and build consistency.</p>
         </div>
 
         {/* Stats Cards */}
         <div
-          className="d-flex justify-content-center gap-4 mb-4 flex-wrap"
-          style={{ maxWidth: "800px", margin: "0 auto" }}
+          className="d-flex justify-content-center gap-3 mb-4 flex-wrap"
+          style={{ maxWidth: 640, margin: "0 auto" }}
         >
-          <div
-            style={{
-              background: "var(--card-bg)",
-              borderRadius: "16px",
-              padding: "1.5rem 2rem",
-              textAlign: "center",
-              boxShadow: "var(--card-shadow)",
-              minWidth: "140px",
-            }}
-          >
+          {stats.map(({ icon, value, label, color }) => (
             <div
+              key={label}
+              className="card-modern text-center"
               style={{
-                fontSize: "2.5rem",
-                fontWeight: "800",
-                color: currentStreak > 0 ? "#f59e0b" : "var(--text-muted)",
+                padding: "1.25rem 1.75rem",
+                minWidth: 140,
+                flex: "1 1 0",
               }}
             >
-              {currentStreak}
+              <div style={{ color, marginBottom: "0.5rem" }}>{icon}</div>
+              <div
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: 800,
+                  color: value > 0 ? "var(--text-primary)" : "var(--text-muted)",
+                  lineHeight: 1.2,
+                }}
+              >
+                {value}
+              </div>
+              <div className="section-label" style={{ marginTop: "0.25rem" }}>
+                {label}
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                color: "var(--text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-              }}
-            >
-              Current Streak
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: "var(--card-bg)",
-              borderRadius: "16px",
-              padding: "1.5rem 2rem",
-              textAlign: "center",
-              boxShadow: "var(--card-shadow)",
-              minWidth: "140px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "800",
-                color: longestStreak > 0 ? "#10b981" : "var(--text-muted)",
-              }}
-            >
-              {longestStreak}
-            </div>
-            <div
-              style={{
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                color: "var(--text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-              }}
-            >
-              Longest Streak
-            </div>
-          </div>
-
-          <div
-            style={{
-              background: "var(--card-bg)",
-              borderRadius: "16px",
-              padding: "1.5rem 2rem",
-              textAlign: "center",
-              boxShadow: "var(--card-shadow)",
-              minWidth: "140px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "800",
-                color: totalCompletions > 0 ? "#3b82f6" : "var(--text-muted)",
-              }}
-            >
-              {totalCompletions}
-            </div>
-            <div
-              style={{
-                fontSize: "0.85rem",
-                fontWeight: "600",
-                color: "var(--text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-              }}
-            >
-              Total Sessions
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Contribution Calendar */}
         <div
-          style={{
-            background: "var(--card-bg)",
-            borderRadius: "16px",
-            padding: "2rem",
-            boxShadow: "var(--card-shadow)",
-            overflowX: "auto",
-          }}
+          className="card-modern"
+          style={{ padding: "1.5rem 2rem", overflowX: "auto" }}
         >
-          <h2
-            style={{
-              fontSize: "1rem",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: "1.5rem",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-            }}
-          >
-            {totalCompletions} focus sessions in the last year
-          </h2>
+          <div className="section-label mb-3">
+            {totalCompletions} focus session{totalCompletions !== 1 ? "s" : ""} in
+            the last year
+          </div>
 
           <div style={{ display: "flex", gap: "4px" }}>
             {/* Day labels */}
@@ -270,7 +183,7 @@ function StreakPage() {
                     height: `${cellSize}px`,
                     fontSize: "9px",
                     color: "var(--text-muted)",
-                    display: i % 2 === 1 ? "flex" : "none", // Show Mon, Wed, Fri
+                    display: i % 2 === 1 ? "flex" : "none",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     width: "24px",
@@ -331,7 +244,7 @@ function StreakPage() {
                         style={{
                           width: `${cellSize}px`,
                           height: `${cellSize}px`,
-                          borderRadius: "2px",
+                          borderRadius: "3px",
                           backgroundColor: day
                             ? getColor(day.count)
                             : "transparent",
@@ -339,7 +252,7 @@ function StreakPage() {
                           transition: "transform 0.1s ease",
                         }}
                         onMouseEnter={(e) => {
-                          if (day) e.target.style.transform = "scale(1.2)";
+                          if (day) e.target.style.transform = "scale(1.3)";
                         }}
                         onMouseLeave={(e) => {
                           if (day) e.target.style.transform = "scale(1)";
@@ -371,7 +284,7 @@ function StreakPage() {
                 style={{
                   width: `${cellSize}px`,
                   height: `${cellSize}px`,
-                  borderRadius: "2px",
+                  borderRadius: "3px",
                   backgroundColor: getColor(count),
                 }}
               />
@@ -380,7 +293,7 @@ function StreakPage() {
           </div>
         </div>
       </Container>
-    </Container>
+    </div>
   );
 }
 

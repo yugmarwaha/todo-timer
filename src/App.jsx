@@ -1,5 +1,6 @@
 import { Container, Navbar, Nav } from "react-bootstrap";
 import { Routes, Route, NavLink } from "react-router";
+import { FiClock, FiHome, FiCheckSquare, FiTrendingUp } from "react-icons/fi";
 import Home from "./pages/Home";
 import TimerPage from "./pages/TimerPage";
 import TodoPage from "./pages/TodoPage";
@@ -15,43 +16,37 @@ function App() {
     <TimerProvider>
       <StreakProvider>
         <TodoProvider>
-          <Navbar
-            expand="lg"
-            className="navbar-custom"
-            style={{
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              borderBottom: "1px solid #E5E7EB",
-              paddingLeft: "40px",
-              paddingRight: "40px",
-            }}
-          >
-            <Navbar.Brand
-              as={NavLink}
-              to="/"
-              style={{ fontWeight: "bold", marginRight: "24px" }}
-            >
-              <span style={{ fontSize: "1.5rem" }}>⏰</span> Todo Timer App
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav style={{ gap: "24px" }}>
-                <Nav.Link as={NavLink} to="/" className="nav-link-custom">
-                  Home
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/timer" className="nav-link-custom">
-                  Timer
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/todo" className="nav-link-custom">
-                  Todo List
-                </Nav.Link>
-                <Nav.Link as={NavLink} to="/streak" className="nav-link-custom">
-                  Streak
-                </Nav.Link>
-              </Nav>
-              <div className="ms-auto">
-                <DarkModeToggle />
-              </div>
-            </Navbar.Collapse>
+          <Navbar expand="lg" className="navbar-custom sticky-top">
+            <Container>
+              <Navbar.Brand as={NavLink} to="/">
+                <FiClock size={20} style={{ color: "var(--accent)" }} />
+                <span>Todo Timer</span>
+              </Navbar.Brand>
+              <Navbar.Toggle aria-controls="main-nav" />
+              <Navbar.Collapse id="main-nav">
+                <Nav className="ms-auto d-flex align-items-center gap-1">
+                  <Nav.Link as={NavLink} to="/" className="nav-link-custom">
+                    <FiHome size={15} className="me-1" />
+                    Home
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/timer" className="nav-link-custom">
+                    <FiClock size={15} className="me-1" />
+                    Timer
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/todo" className="nav-link-custom">
+                    <FiCheckSquare size={15} className="me-1" />
+                    Tasks
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/streak" className="nav-link-custom">
+                    <FiTrendingUp size={15} className="me-1" />
+                    Streaks
+                  </Nav.Link>
+                  <div className="ms-3">
+                    <DarkModeToggle />
+                  </div>
+                </Nav>
+              </Navbar.Collapse>
+            </Container>
           </Navbar>
           <Routes>
             <Route path="/" element={<Home />} />

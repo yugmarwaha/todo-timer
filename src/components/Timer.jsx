@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { Card } from "react-bootstrap";
+import { useState } from "react";
+import { FiPlay, FiPause, FiRefreshCw, FiVolumeX } from "react-icons/fi";
 import { useTimer } from "../context/TimerContext";
 
-function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
+function Timer() {
   const {
     initialHours,
     initialMinutes,
@@ -25,159 +25,28 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
   const [editHours, setEditHours] = useState("");
   const [editMinutes, setEditMinutes] = useState("");
   const [editSeconds, setEditSeconds] = useState("");
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const totalSeconds =
     initialHours * 3600 + initialMinutes * 60 + initialSeconds;
   const currentSeconds = hours * 3600 + minutes * 60 + seconds;
-  const progressPercentage = (currentSeconds / totalSeconds) * 100;
+  const progressPercentage = totalSeconds > 0 ? (currentSeconds / totalSeconds) * 100 : 0;
 
-  // Muted color palette for minimal design
-  const COLORS = {
-    neutral: "#64748B", // neutral gray (default)
-    amber: "#F59E0B", // amber for <10 min
-    red: "#EF4444", // red for <3 min
-  };
-
-  /**
-   * Returns the color for the timer ring.
-   * Uses consistent color for all timers.
-   * @returns {string} Hex color code
-   */
-  const getTimerColor = () => {
-    // Use lighter color in dark mode for visibility
-    return isDarkMode ? "#CBD5E1" : "#64748B"; // Consistent neutral gray for all timers
-  };
-
-  const getButtonBackground = () => {
-    return isDarkMode ? "#64748B" : "#60A5FA"; // Muted gray in dark mode, blue in light mode
-  };
-
-  const getButtonHoverBackground = () => {
-    return isDarkMode ? "#475569" : "#3B82F6"; // Darker gray in dark mode, darker blue in light mode
-  };
-
-  const getButtonShadow = () => {
-    return isDarkMode
-      ? "0 2px 8px rgba(100, 116, 139, 0.3)"
-      : "0 2px 8px rgba(96, 165, 250, 0.3)";
-  };
-
-  const getButtonHoverShadow = () => {
-    return isDarkMode
-      ? "0 4px 12px rgba(71, 85, 105, 0.4)"
-      : "0 4px 12px rgba(59, 130, 246, 0.4)";
-  };
-
-  const getPresetBackground = () => {
-    return isDarkMode ? "#64748B" : "#F1F5F9";
-  };
-
-  const getPresetBorder = () => {
-    return isDarkMode ? "none" : "1px solid #E2E8F0";
-  };
-
-  const getPresetColor = () => {
-    return isDarkMode ? "#FFFFFF" : "#475569";
-  };
-
-  const getPresetHoverBackground = () => {
-    return isDarkMode ? "#475569" : "#E2E8F0";
-  };
-
-  const getPresetShadow = () => {
-    return isDarkMode
-      ? "0 2px 8px rgba(100, 116, 139, 0.3)"
-      : "0 2px 4px rgba(0, 0, 0, 0.05)";
-  };
-
-  const getPresetHoverShadow = () => {
-    return isDarkMode
-      ? "0 4px 12px rgba(71, 85, 105, 0.4)"
-      : "0 4px 8px rgba(0, 0, 0, 0.1)";
-  };
-
-  const getBackgroundTrackColor = () => {
-    return isDarkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)";
-  };
-
-  const getTimerDisplayColor = () => {
-    return isDarkMode ? "#f0f6fc" : "#1E293B";
-  };
-
-  /**
-   * Returns a CSS gradient based on remaining time percentage.
-   * @returns {string} CSS linear-gradient string
-   */
-  const getTimerGradient = () => {
-    if (progressPercentage > 83) {
-      return `linear-gradient(135deg, ${COLORS.emerald} 0%, #059669 100%)`;
-    } else if (progressPercentage > 66) {
-      return `linear-gradient(135deg, ${COLORS.cyan} 0%, #0891B2 100%)`;
-    } else if (progressPercentage > 50) {
-      return `linear-gradient(135deg, ${COLORS.sky} 0%, #0284C7 100%)`;
-    } else if (progressPercentage > 33) {
-      return `linear-gradient(135deg, ${COLORS.amber} 0%, #D97706 100%)`;
-    } else if (progressPercentage > 16) {
-      return `linear-gradient(135deg, ${COLORS.orange} 0%, #EA580C 100%)`;
-    } else {
-      return `linear-gradient(135deg, ${COLORS.rose} 0%, #E11D48 100%)`;
-    }
-  };
-
-  // Enhanced preset system
   const PRESETS = [
-    {
-      time: 1,
-      label: "Quick",
-      icon: "⚡",
-      color: "#10B981",
-      gradient: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
-    },
-    {
-      time: 5,
-      label: "Break",
-      icon: "☕",
-      color: "#F59E0B",
-      gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
-    },
-    {
-      time: 25,
-      label: "Focus",
-      icon: "🎯",
-      color: "#3B82F6",
-      gradient: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
-    },
-    {
-      time: 45,
-      label: "Deep",
-      icon: "🔥",
-      color: "#EF4444",
-      gradient: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
-    },
+    { time: 1, label: "Quick" },
+    { time: 5, label: "Break" },
+    { time: 25, label: "Focus" },
+    { time: 45, label: "Deep Work" },
   ];
 
-  // Watch for theme changes
-  useEffect(() => {
-    const checkTheme = () => {
-      const theme = document.documentElement.getAttribute("data-theme");
-      setIsDarkMode(theme === "dark");
-    };
+  // SVG circle properties
+  const size = 280;
+  const strokeWidth = 10;
+  const center = size / 2;
+  const radius = center - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset =
+    circumference - (progressPercentage / 100) * circumference;
 
-    // Check initial theme
-    checkTheme();
-
-    // Watch for theme changes
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Custom time input handlers
   const handleTimeClick = () => {
     if (!isRunning && !isPaused) {
       setIsEditingTime(true);
@@ -187,39 +56,10 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
     }
   };
 
-  const handleHoursEdit = (e) => {
+  const handleFieldChange = (setter, max) => (e) => {
     const value = e.target.value;
-    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 23)) {
-      setEditHours(value);
-    }
-  };
-
-  const handleMinutesEdit = (e) => {
-    const value = e.target.value;
-    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 59)) {
-      setEditMinutes(value);
-    }
-  };
-
-  const handleSecondsEdit = (e) => {
-    const value = e.target.value;
-    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= 59)) {
-      setEditSeconds(value);
-    }
-  };
-
-  const handleTimeEditBlur = () => {
-    applyEditedTime();
-  };
-
-  const handleTimeEditKeyDown = (e) => {
-    if (e.key === "Enter") {
-      applyEditedTime();
-    } else if (e.key === "Escape") {
-      setIsEditingTime(false);
-      setEditHours("");
-      setEditMinutes("");
-      setEditSeconds("");
+    if (value === "" || (/^\d+$/.test(value) && parseInt(value) <= max)) {
+      setter(value);
     }
   };
 
@@ -227,55 +67,36 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
     const h = parseInt(editHours, 10) || 0;
     const m = parseInt(editMinutes, 10) || 0;
     const s = parseInt(editSeconds, 10) || 0;
-
     setTime(h, m, s);
     setIsEditingTime(false);
-    setEditHours("");
-    setEditMinutes("");
-    setEditSeconds("");
   };
 
-  // SVG circle properties
-  const size = 280;
-  const strokeWidth = 14;
-  const center = size / 2;
-  const radius = center - strokeWidth / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset =
-    circumference - (progressPercentage / 100) * circumference;
+  const handleTimeEditKeyDown = (e) => {
+    if (e.key === "Enter") applyEditedTime();
+    else if (e.key === "Escape") setIsEditingTime(false);
+  };
 
   return (
-    <Card
-      className="compact-timer timer-card-glass"
+    <div
+      className="timer-card"
       style={{
-        border: "none",
-        borderRadius: "20px",
-        animation: justCompleted
-          ? "celebrate 0.6s ease-in-out"
-          : isRunning
-          ? "pulse 2s infinite"
-          : "none",
-        transition: "all 0.3s ease",
+        animation: justCompleted ? "celebrate 0.6s ease-in-out" : "none",
       }}
     >
-      <Card.Body className="p-4 d-flex flex-column align-items-center">
+      <div className="d-flex flex-column align-items-center">
         {/* Circular Timer */}
         <div
-          className="mb-4"
           style={{
             position: "relative",
             width: size,
             height: size,
-            margin: "0 auto",
-            animation: isRunning
-              ? "ring-pulse 3s ease-in-out infinite"
-              : "none",
+            margin: "0 auto 1.5rem",
+            animation: isRunning ? "pulse-ring 3s ease-in-out infinite" : "none",
           }}
         >
           <svg
             width={size}
             height={size}
-            className="timer-ring"
             style={{
               position: "absolute",
               top: 0,
@@ -283,52 +104,34 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
               transform: "rotate(-90deg)",
             }}
           >
-            {/* Gradient definitions */}
-            <defs>
-              <linearGradient
-                id="progressGradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop offset="0%" stopColor={getTimerColor()} />
-                <stop
-                  offset="100%"
-                  stopColor={getTimerColor()}
-                  stopOpacity="0.7"
-                />
-              </linearGradient>
-            </defs>
-
-            {/* Background track circle */}
+            {/* Background track */}
             <circle
               cx={center}
               cy={center}
               r={radius}
               fill="none"
-              stroke={getBackgroundTrackColor()}
+              stroke="var(--border-color)"
               strokeWidth={strokeWidth}
             />
-
-            {/* Main progress ring with gradient */}
+            {/* Progress ring */}
             <circle
               cx={center}
               cy={center}
               r={radius}
               fill="none"
-              stroke="url(#progressGradient)"
+              stroke="var(--accent)"
               strokeWidth={strokeWidth}
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
               style={{
-                transition: "stroke-dashoffset 1s linear, stroke 0.3s ease",
+                transition: "stroke-dashoffset 1s linear",
+                opacity: 0.85,
               }}
             />
           </svg>
 
-          {/* Timer display in center */}
+          {/* Time display */}
           <div
             style={{
               position: "absolute",
@@ -336,352 +139,146 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
               left: "50%",
               transform: "translate(-50%, -50%)",
               textAlign: "center",
-              width: "100%",
             }}
           >
-            <div
-              style={{
-                fontSize: "3rem",
-                fontWeight: "900",
-                fontFamily: "'Inter', sans-serif",
-                letterSpacing: "1px",
-                lineHeight: 1,
-                color: getTimerDisplayColor(),
-                animation: isRunning
-                  ? "breathe 4s ease-in-out infinite"
-                  : "none",
-              }}
-            >
+            <div className="timer-display-text">
               {String(hours).padStart(2, "0")}
-              <span
-                style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
-              >
-                :
-              </span>
+              <span className="separator">:</span>
               {String(minutes).padStart(2, "0")}
-              <span
-                style={{ opacity: 0.3, margin: "0 3px", fontWeight: "400" }}
-              >
-                :
-              </span>
+              <span className="separator">:</span>
               {String(seconds).padStart(2, "0")}
             </div>
           </div>
         </div>
 
-        {/* Editable timer input */}
+        {/* Editable time input */}
         {!isRunning && !isPaused && (
-          <div className="text-center mb-3">
+          <div className="text-center mb-3" style={{ width: "100%", maxWidth: 320 }}>
             {isEditingTime ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "8px",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <div
-                  style={{ display: "flex", gap: "8px", alignItems: "center" }}
-                >
+              <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                <div className="d-flex align-items-center gap-1">
                   <input
                     type="number"
                     min="0"
                     max="23"
                     value={editHours}
-                    onChange={handleHoursEdit}
+                    onChange={handleFieldChange(setEditHours, 23)}
                     onKeyDown={handleTimeEditKeyDown}
+                    onBlur={applyEditedTime}
                     autoFocus
                     placeholder="0"
                     aria-label="Hours"
-                    className="timer-input"
-                    style={{ width: "60px !important" }}
+                    className="timer-input-field"
                   />
-                  <span
-                    style={{ fontSize: "1.5rem", color: "var(--text-muted)" }}
-                  >
-                    :
-                  </span>
+                  <span style={{ color: "var(--text-muted)", fontWeight: 300, fontSize: "1.25rem" }}>:</span>
                   <input
                     type="number"
                     min="0"
                     max="59"
                     value={editMinutes}
-                    onChange={handleMinutesEdit}
+                    onChange={handleFieldChange(setEditMinutes, 59)}
                     onKeyDown={handleTimeEditKeyDown}
                     placeholder="0"
                     aria-label="Minutes"
-                    className="timer-input"
-                    style={{ width: "60px !important" }}
+                    className="timer-input-field"
                   />
-                  <span
-                    style={{ fontSize: "1.5rem", color: "var(--text-muted)" }}
-                  >
-                    :
-                  </span>
+                  <span style={{ color: "var(--text-muted)", fontWeight: 300, fontSize: "1.25rem" }}>:</span>
                   <input
                     type="number"
                     min="0"
                     max="59"
                     value={editSeconds}
-                    onChange={handleSecondsEdit}
+                    onChange={handleFieldChange(setEditSeconds, 59)}
                     onKeyDown={handleTimeEditKeyDown}
                     placeholder="0"
                     aria-label="Seconds"
-                    className="timer-input"
-                    style={{ width: "60px !important" }}
+                    className="timer-input-field"
                   />
                 </div>
-                <button
-                  onClick={applyEditedTime}
-                  style={{
-                    padding: "8px 16px",
-                    fontSize: "0.9rem",
-                    fontWeight: "600",
-                    background: "var(--accent-blue)",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow =
-                      "0 4px 12px rgba(96, 165, 250, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
-                  }}
-                >
-                  ✓ Set
+                <button className="btn-accent" onClick={applyEditedTime} style={{ padding: "0.5rem 1rem" }}>
+                  Set
                 </button>
               </div>
             ) : (
-              <div
+              <button
                 onClick={handleTimeClick}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    handleTimeClick();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-                aria-label="Click to edit timer duration"
                 style={{
                   cursor: "pointer",
-                  border: "none",
-                  padding: "14px 20px",
-                  width: "240px",
-                  minHeight: "70px",
+                  border: "1px solid var(--border-color)",
+                  padding: "0.625rem 1.5rem",
                   margin: "0 auto",
-                  display: "flex",
-                  flexDirection: "column",
+                  display: "inline-flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  gap: "4px",
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "var(--text-primary)",
+                  gap: "0.5rem",
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
                   background: "var(--input-bg)",
-                  borderRadius: "12px",
-                  textAlign: "center",
-                  transition: "background-color 0.2s ease",
+                  borderRadius: "10px",
+                  transition: "all 0.15s ease",
                 }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "rgba(16, 185, 129, 0.1)")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "var(--input-bg)")
-                }
               >
-                {initialHours > 0 && (
-                  <div>
-                    {initialHours} <span className="timer-min-label">hr</span>
-                  </div>
-                )}
-                <div>
-                  {initialMinutes} <span className="timer-min-label">min</span>
-                </div>
-                {initialSeconds > 0 && (
-                  <div>
-                    {initialSeconds}{" "}
-                    <span className="timer-min-label">sec</span>
-                  </div>
-                )}
-              </div>
+                {initialHours > 0 && <span>{initialHours}h</span>}
+                <span>{initialMinutes}m</span>
+                {initialSeconds > 0 && <span>{initialSeconds}s</span>}
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                  (click to edit)
+                </span>
+              </button>
             )}
           </div>
         )}
 
         {/* Control buttons */}
-        <div className="w-100 mb-3">
+        <div className="w-100 mb-3" style={{ maxWidth: 320 }}>
           {!isRunning && !isPaused ? (
-            <>
+            <div className="d-flex flex-column gap-2">
               {isSoundPlaying && (
                 <button
+                  className="btn-accent w-100 d-flex align-items-center justify-content-center gap-2"
                   onClick={stopSound}
-                  style={{
-                    width: "100%",
-                    fontSize: "16px",
-                    fontWeight: "700",
-                    padding: "14px 20px",
-                    height: "52px",
-                    textTransform: "uppercase",
-                    letterSpacing: "1.5px",
-                    background: "#EF4444",
-                    border: "none",
-                    borderRadius: "12px",
-                    color: "#FFFFFF",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)",
-                    marginBottom: "8px",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = "#DC2626";
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow =
-                      "0 4px 12px rgba(220, 38, 38, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = "#EF4444";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow =
-                      "0 2px 8px rgba(239, 68, 68, 0.3)";
-                  }}
+                  style={{ background: "var(--danger)", padding: "0.75rem" }}
                 >
-                  🔇 STOP SOUND
+                  <FiVolumeX size={18} />
+                  Stop Sound
                 </button>
               )}
               <button
+                className="btn-accent w-100 d-flex align-items-center justify-content-center gap-2"
                 onClick={handleStart}
-                style={{
-                  width: "100%",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  padding: "16px 20px",
-                  height: "56px",
-                  textTransform: "uppercase",
-                  letterSpacing: "1.5px",
-                  background: getButtonBackground(),
-                  border: "none",
-                  borderRadius: "12px",
-                  color: "#FFFFFF",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  boxShadow: getButtonShadow(),
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = getButtonHoverBackground();
-                  e.target.style.transform = "translateY(-2px)";
-                  e.target.style.boxShadow = getButtonHoverShadow();
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = getButtonBackground();
-                  e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow = getButtonShadow();
-                }}
+                style={{ padding: "0.875rem" }}
               >
-                ▶ START
+                <FiPlay size={18} />
+                Start
               </button>
-            </>
+            </div>
           ) : (
             <div className="d-flex gap-2">
               {isRunning ? (
                 <button
+                  className="btn-accent d-flex align-items-center justify-content-center gap-2"
                   onClick={handlePause}
-                  style={{
-                    flex: "1",
-                    fontSize: "0.9rem",
-                    fontWeight: "700",
-                    padding: "10px",
-                    background: getButtonBackground(),
-                    border: "none",
-                    borderRadius: "12px",
-                    color: "#FFFFFF",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    boxShadow: getButtonShadow(),
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = getButtonHoverBackground();
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow = getButtonHoverShadow();
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = getButtonBackground();
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = getButtonShadow();
-                  }}
+                  style={{ flex: 1 }}
                 >
-                  ⏸ PAUSE
+                  <FiPause size={16} />
+                  Pause
                 </button>
               ) : (
                 <button
+                  className="btn-accent d-flex align-items-center justify-content-center gap-2"
                   onClick={handleStart}
-                  style={{
-                    flex: "1",
-                    fontSize: "0.9rem",
-                    fontWeight: "700",
-                    padding: "10px",
-                    background: getButtonBackground(),
-                    border: "none",
-                    borderRadius: "12px",
-                    color: "#FFFFFF",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px",
-                    boxShadow: getButtonShadow(),
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = getButtonHoverBackground();
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow = getButtonHoverShadow();
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = getButtonBackground();
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = getButtonShadow();
-                  }}
+                  style={{ flex: 1 }}
                 >
-                  ▶ RESUME
+                  <FiPlay size={16} />
+                  Resume
                 </button>
               )}
               <button
+                className="btn-ghost d-flex align-items-center justify-content-center gap-2"
                 onClick={handleReset}
-                style={{
-                  fontSize: "0.9rem",
-                  fontWeight: "700",
-                  padding: "10px 16px",
-                  background: getButtonBackground(),
-                  border: "none",
-                  borderRadius: "12px",
-                  color: "#FFFFFF",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  textTransform: "uppercase",
-                  letterSpacing: "1px",
-                  boxShadow: getButtonShadow(),
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = getButtonHoverBackground();
-                  e.target.style.transform = "translateY(-2px)";
-                  e.target.style.boxShadow = getButtonHoverShadow();
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = getButtonBackground();
-                  e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow = getButtonShadow();
-                }}
               >
-                🔄 RESET
+                <FiRefreshCw size={16} />
+                Reset
               </button>
             </div>
           )}
@@ -689,62 +286,28 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
 
         {/* Quick presets */}
         {!isRunning && !isPaused && (
-          <div className="w-100">
-            <div
-              className="text-center mb-2 timer-presets-label"
-              style={{
-                fontSize: "0.75rem",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-              }}
-            >
-              Quick Presets
-            </div>
-            <div className="d-flex gap-2 justify-content-center">
-              {PRESETS.map(({ time, label, icon, gradient, color }) => (
+          <div style={{ width: "100%", maxWidth: 320 }}>
+            <div className="section-label text-center mb-2">Quick Presets</div>
+            <div className="d-flex gap-2">
+              {PRESETS.map(({ time, label }) => (
                 <button
                   key={time}
                   onClick={() => setTime(0, time, 0)}
+                  className="btn-ghost"
                   style={{
-                    fontSize: "0.75rem",
-                    fontWeight: "700",
-                    borderRadius: "12px",
                     flex: 1,
-                    background: getPresetBackground(),
-                    border: getPresetBorder(),
-                    color: getPresetColor(),
-                    padding: "10px 8px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
+                    padding: "0.625rem 0.5rem",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    gap: "4px",
-                    boxShadow: getPresetShadow(),
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = getPresetHoverBackground();
-                    e.target.style.transform = "translateY(-2px) scale(1.05)";
-                    e.target.style.boxShadow = getPresetHoverShadow();
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = getPresetBackground();
-                    e.target.style.transform = "translateY(0) scale(1)";
-                    e.target.style.boxShadow = getPresetShadow();
+                    gap: "2px",
+                    fontSize: "0.75rem",
                   }}
                 >
-                  <span style={{ fontSize: "0.85rem", fontWeight: "800" }}>
+                  <span style={{ fontWeight: 700, fontSize: "0.85rem" }}>
                     {time}m
                   </span>
-                  <span
-                    style={{
-                      fontSize: "0.65rem",
-                      opacity: 0.9,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                     {label}
                   </span>
                 </button>
@@ -752,8 +315,8 @@ function Timer({ compact = false, showHero = false, onTimerComplete = null }) {
             </div>
           </div>
         )}
-      </Card.Body>
-    </Card>
+      </div>
+    </div>
   );
 }
 

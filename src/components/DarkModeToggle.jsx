@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { FiSun, FiMoon } from "react-icons/fi";
 
 function DarkModeToggle() {
   const [darkMode, setDarkMode] = useState(false);
@@ -26,21 +27,13 @@ function DarkModeToggle() {
   return (
     <button
       onClick={toggleDarkMode}
-      style={{
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        transition: "transform 0.2s ease",
-        fontSize: "24px",
-        color: darkMode ? "#CBD5E1" : "#64748B",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onMouseEnter={(e) => (e.target.style.transform = "scale(1.1)")}
-      onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
+      className="dark-mode-toggle"
+      data-active={darkMode}
+      aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {darkMode ? "☀️" : "🌙"}
+      <span className="toggle-knob">
+        {darkMode ? <FiSun size={12} /> : <FiMoon size={12} />}
+      </span>
     </button>
   );
 }
