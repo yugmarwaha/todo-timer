@@ -1,6 +1,6 @@
-import { Container, Navbar, Nav } from "react-bootstrap";
+import { useState } from "react";
 import { Routes, Route, NavLink } from "react-router";
-import { FiClock, FiHome, FiCheckSquare, FiTrendingUp } from "react-icons/fi";
+import { FiClock, FiHome, FiCheckSquare, FiTrendingUp, FiMenu, FiX } from "react-icons/fi";
 import Home from "./pages/Home";
 import TimerPage from "./pages/TimerPage";
 import TodoPage from "./pages/TodoPage";
@@ -12,42 +12,56 @@ import { StreakProvider } from "./context/StreakContext";
 import "./App.css";
 
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <TimerProvider>
       <StreakProvider>
         <TodoProvider>
-          <Navbar expand="lg" className="navbar-custom sticky-top">
-            <Container>
-              <Navbar.Brand as={NavLink} to="/">
-                <FiClock size={20} style={{ color: "var(--accent)" }} />
+          <nav className="navbar-glass">
+            <div className="navbar-inner">
+              <NavLink to="/" className="navbar-brand" onClick={closeMenu}>
+                <FiClock size={20} />
                 <span>Todo Timer</span>
-              </Navbar.Brand>
-              <Navbar.Toggle aria-controls="main-nav" />
-              <Navbar.Collapse id="main-nav">
-                <Nav className="ms-auto d-flex align-items-center gap-1">
-                  <Nav.Link as={NavLink} to="/" className="nav-link-custom">
-                    <FiHome size={15} className="me-1" />
-                    Home
-                  </Nav.Link>
-                  <Nav.Link as={NavLink} to="/timer" className="nav-link-custom">
-                    <FiClock size={15} className="me-1" />
-                    Timer
-                  </Nav.Link>
-                  <Nav.Link as={NavLink} to="/todo" className="nav-link-custom">
-                    <FiCheckSquare size={15} className="me-1" />
-                    Tasks
-                  </Nav.Link>
-                  <Nav.Link as={NavLink} to="/streak" className="nav-link-custom">
-                    <FiTrendingUp size={15} className="me-1" />
-                    Streaks
-                  </Nav.Link>
-                  <div className="ms-3">
-                    <DarkModeToggle />
-                  </div>
-                </Nav>
-              </Navbar.Collapse>
-            </Container>
-          </Navbar>
+              </NavLink>
+
+              <button
+                className="navbar-toggle"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+              >
+                {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+              </button>
+
+              <div className={`navbar-menu ${menuOpen ? "navbar-menu--open" : ""}`}>
+                <div className="navbar-links">
+                  <NavLink to="/" end className="nav-pill" onClick={closeMenu}>
+                    <FiHome size={15} />
+                    <span>Home</span>
+                  </NavLink>
+                  <NavLink to="/timer" className="nav-pill" onClick={closeMenu}>
+                    <FiClock size={15} />
+                    <span>Timer</span>
+                  </NavLink>
+                  <NavLink to="/todo" className="nav-pill" onClick={closeMenu}>
+                    <FiCheckSquare size={15} />
+                    <span>Tasks</span>
+                  </NavLink>
+                  <NavLink to="/streak" className="nav-pill" onClick={closeMenu}>
+                    <FiTrendingUp size={15} />
+                    <span>Streaks</span>
+                  </NavLink>
+                </div>
+                <div className="navbar-actions">
+                  <DarkModeToggle />
+                </div>
+              </div>
+            </div>
+          </nav>
+
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/timer" element={<TimerPage />} />
