@@ -78,9 +78,9 @@ function Timer() {
 
   return (
     <div
-      className="timer-card"
+      className="timer-card fade-in"
       style={{
-        animation: justCompleted ? "celebrate 0.6s ease-in-out" : "none",
+        animation: justCompleted ? "celebrate 0.6s ease-in-out" : undefined,
       }}
     >
       <div className="d-flex flex-column align-items-center">
@@ -102,6 +102,7 @@ function Timer() {
               top: 0,
               left: 0,
               transform: "rotate(-90deg)",
+              filter: "drop-shadow(0 0 10px rgba(99, 102, 241, 0.15))"
             }}
           >
             {/* Background track */}
@@ -112,6 +113,7 @@ function Timer() {
               fill="none"
               stroke="var(--border-color)"
               strokeWidth={strokeWidth}
+              style={{ opacity: 0.3 }}
             />
             {/* Progress ring */}
             <circle
@@ -126,7 +128,7 @@ function Timer() {
               strokeLinecap="round"
               style={{
                 transition: "stroke-dashoffset 1s linear",
-                opacity: 0.85,
+                filter: "drop-shadow(0 0 4px var(--accent))"
               }}
             />
           </svg>
@@ -153,7 +155,7 @@ function Timer() {
 
         {/* Editable time input */}
         {!isRunning && !isPaused && (
-          <div className="text-center mb-3" style={{ width: "100%", maxWidth: 320 }}>
+          <div className="text-center mb-4" style={{ width: "100%", maxWidth: 320 }}>
             {isEditingTime ? (
               <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
                 <div className="d-flex align-items-center gap-1">
@@ -202,27 +204,19 @@ function Timer() {
             ) : (
               <button
                 onClick={handleTimeClick}
+                className="btn-ghost"
                 style={{
-                  cursor: "pointer",
-                  border: "1px solid var(--border-color)",
-                  padding: "0.625rem 1.5rem",
-                  margin: "0 auto",
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "0.5rem",
-                  fontSize: "0.9rem",
-                  fontWeight: 600,
-                  color: "var(--text-secondary)",
-                  background: "var(--input-bg)",
-                  borderRadius: "10px",
-                  transition: "all 0.15s ease",
+                  margin: "0 auto",
                 }}
               >
                 {initialHours > 0 && <span>{initialHours}h</span>}
                 <span>{initialMinutes}m</span>
                 {initialSeconds > 0 && <span>{initialSeconds}s</span>}
                 <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                  (click to edit)
+                  (Edit)
                 </span>
               </button>
             )}
@@ -230,9 +224,9 @@ function Timer() {
         )}
 
         {/* Control buttons */}
-        <div className="w-100 mb-3" style={{ maxWidth: 320 }}>
+        <div className="w-100 mb-4" style={{ maxWidth: 320 }}>
           {!isRunning && !isPaused ? (
-            <div className="d-flex flex-column gap-2">
+            <div className="d-flex flex-column gap-3">
               {isSoundPlaying && (
                 <button
                   className="btn-accent w-100 d-flex align-items-center justify-content-center gap-2"
@@ -246,21 +240,21 @@ function Timer() {
               <button
                 className="btn-accent w-100 d-flex align-items-center justify-content-center gap-2"
                 onClick={handleStart}
-                style={{ padding: "0.875rem" }}
+                style={{ padding: "0.875rem", fontSize: "1.1rem" }}
               >
-                <FiPlay size={18} />
-                Start
+                <FiPlay size={20} />
+                Start Timer
               </button>
             </div>
           ) : (
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-3">
               {isRunning ? (
                 <button
                   className="btn-accent d-flex align-items-center justify-content-center gap-2"
                   onClick={handlePause}
                   style={{ flex: 1 }}
                 >
-                  <FiPause size={16} />
+                  <FiPause size={18} />
                   Pause
                 </button>
               ) : (
@@ -269,7 +263,7 @@ function Timer() {
                   onClick={handleStart}
                   style={{ flex: 1 }}
                 >
-                  <FiPlay size={16} />
+                  <FiPlay size={18} />
                   Resume
                 </button>
               )}
@@ -277,7 +271,7 @@ function Timer() {
                 className="btn-ghost d-flex align-items-center justify-content-center gap-2"
                 onClick={handleReset}
               >
-                <FiRefreshCw size={16} />
+                <FiRefreshCw size={18} />
                 Reset
               </button>
             </div>
@@ -286,8 +280,8 @@ function Timer() {
 
         {/* Quick presets */}
         {!isRunning && !isPaused && (
-          <div style={{ width: "100%", maxWidth: 320 }}>
-            <div className="section-label text-center mb-2">Quick Presets</div>
+          <div style={{ width: "100%", maxWidth: 360 }}>
+            <div className="section-label text-center mb-3">Quick Presets</div>
             <div className="d-flex gap-2">
               {PRESETS.map(({ time, label }) => (
                 <button
@@ -296,18 +290,17 @@ function Timer() {
                   className="btn-ghost"
                   style={{
                     flex: 1,
-                    padding: "0.625rem 0.5rem",
+                    padding: "0.75rem 0.5rem",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    gap: "2px",
-                    fontSize: "0.75rem",
+                    gap: "4px",
                   }}
                 >
-                  <span style={{ fontWeight: 700, fontSize: "0.85rem" }}>
+                  <span style={{ fontWeight: 700, fontSize: "1rem" }}>
                     {time}m
                   </span>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  <span style={{ color: "var(--text-muted)", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                     {label}
                   </span>
                 </button>
