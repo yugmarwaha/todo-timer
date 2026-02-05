@@ -48,30 +48,27 @@ function Quotes() {
 
   return (
     <div
+      className="text-center p-4 fade-in"
       style={{
-        padding: "1.5rem 2rem",
-        borderRadius: "12px",
+        borderRadius: "16px",
         background: "var(--accent-subtle)",
-        border: "1px solid var(--border-color)",
-        textAlign: "center",
-        transition: "all 0.3s ease",
+        border: "1px solid var(--accent-ring)",
       }}
     >
       <blockquote
+        className="mb-2"
         style={{
-          fontSize: "1rem",
+          fontSize: "1.1rem",
           fontStyle: "italic",
           color: "var(--text-secondary)",
-          margin: 0,
-          marginBottom: "0.5rem",
-          lineHeight: 1.6,
+          lineHeight: 1.5,
         }}
       >
         &ldquo;{currentQuote.text}&rdquo;
       </blockquote>
       <cite
         style={{
-          fontSize: "0.85rem",
+          fontSize: "0.9rem",
           color: "var(--text-muted)",
           fontWeight: 600,
           fontStyle: "normal",

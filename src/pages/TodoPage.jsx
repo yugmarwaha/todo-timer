@@ -2,7 +2,7 @@ import TodoList from "../components/TodoList";
 
 function TodoPage() {
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper fade-in">
       <div className="container">
         <div className="page-header">
           <h1>Task Manager</h1>

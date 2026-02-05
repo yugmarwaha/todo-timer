@@ -6,25 +6,14 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="page-wrapper">
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 1rem" }}>
+    <div className="page-wrapper fade-in">
+      <div className="container">
         {/* Hero */}
-        <div
-          className="page-header"
-          style={{ marginTop: "3rem", marginBottom: "3rem" }}
-        >
-          <h1 style={{ fontSize: "2.75rem", fontWeight: 800 }}>
+        <div className="page-header">
+          <h1>
             Focus. Track. Grow.
           </h1>
-          <p
-            style={{
-              fontSize: "1.125rem",
-              color: "var(--text-secondary)",
-              maxWidth: 480,
-              margin: "0.75rem auto 0",
-              lineHeight: 1.6,
-            }}
-          >
+          <p>
             A simple productivity timer paired with task management and streak
             tracking to help you stay consistent.
           </p>
@@ -33,11 +22,11 @@ function Home() {
         {/* CTA buttons */}
         <div className="d-flex justify-content-center gap-3 mb-5">
           <button className="btn-accent d-flex align-items-center gap-2" onClick={() => navigate("/timer")}>
-            <FiPlay size={16} />
+            <FiPlay size={18} />
             Start Timer
           </button>
           <button className="btn-ghost d-flex align-items-center gap-2" onClick={() => navigate("/todo")}>
-            <FiCheckSquare size={16} />
+            <FiCheckSquare size={18} />
             View Tasks
           </button>
         </div>
@@ -49,64 +38,75 @@ function Home() {
             style={{ cursor: "pointer" }}
             onClick={() => navigate("/timer")}
           >
-            <FiClock
-              size={28}
-              style={{ color: "var(--accent)", marginBottom: "0.75rem" }}
-            />
-            <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
+            <div className="mb-3 d-flex justify-content-center">
+              <span style={{ 
+                width: 50, height: 50, 
+                background: 'var(--accent-subtle)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: 'var(--accent)'
+              }}>
+                <FiClock size={24} />
+              </span>
+            </div>
+            <h3 className="mb-2" style={{ fontSize: "1.25rem" }}>
               Focus Timer
             </h3>
-            <p
-              style={{
-                fontSize: "0.85rem",
-                color: "var(--text-muted)",
-                margin: 0,
-              }}
-            >
+            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
               Customizable countdown with presets for focused work sessions.
             </p>
           </div>
+
           <div
             className="card-modern text-center p-4"
             style={{ cursor: "pointer" }}
             onClick={() => navigate("/todo")}
           >
-            <FiCheckSquare
-              size={28}
-              style={{ color: "var(--success)", marginBottom: "0.75rem" }}
-            />
-            <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
+            <div className="mb-3 d-flex justify-content-center">
+              <span style={{ 
+                width: 50, height: 50, 
+                background: 'var(--success-subtle)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: 'var(--success)'
+              }}>
+                <FiCheckSquare size={24} />
+              </span>
+            </div>
+            <h3 className="mb-2" style={{ fontSize: "1.25rem" }}>
               Task Manager
             </h3>
-            <p
-              style={{
-                fontSize: "0.85rem",
-                color: "var(--text-muted)",
-                margin: 0,
-              }}
-            >
+            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
               Create, edit, and track your tasks with progress overview.
             </p>
           </div>
+
           <div
             className="card-modern text-center p-4"
             style={{ cursor: "pointer" }}
             onClick={() => navigate("/streak")}
           >
-            <FiTrendingUp
-              size={28}
-              style={{ color: "var(--warning)", marginBottom: "0.75rem" }}
-            />
-            <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
+            <div className="mb-3 d-flex justify-content-center">
+              <span style={{ 
+                width: 50, height: 50, 
+                background: 'var(--danger-subtle)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: 'var(--danger)' // Using danger color for streaks hotness
+              }}>
+                <FiTrendingUp size={24} />
+              </span>
+            </div>
+            <h3 className="mb-2" style={{ fontSize: "1.25rem" }}>
               Streak Tracker
             </h3>
-            <p
-              style={{
-                fontSize: "0.85rem",
-                color: "var(--text-muted)",
-                margin: 0,
-              }}
-            >
+            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
               Visualize your consistency with a contribution calendar.
             </p>
           </div>

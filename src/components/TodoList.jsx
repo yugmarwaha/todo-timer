@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiTrash2, FiEdit2, FiCheck, FiX, FiPlus } from "react-icons/fi";
+import { FiTrash2, FiEdit2, FiCheck, FiX, FiPlus, FiList } from "react-icons/fi";
 import { useTodo } from "../context/TodoContext";
 
 function TodoList() {
@@ -52,15 +52,14 @@ function TodoList() {
   const renderTodoItem = (todo, isCompleted) => (
     <div
       key={todo.id}
-      className="d-flex align-items-center gap-3"
+      className="d-flex align-items-center gap-3 mb-2"
       style={{
         padding: "0.75rem 1rem",
-        marginBottom: "0.5rem",
         background: "var(--input-bg)",
-        borderRadius: "10px",
+        borderRadius: "12px",
         border: "1px solid var(--border-color)",
         opacity: isCompleted ? 0.6 : 1,
-        transition: "all 0.15s ease",
+        transition: "all 0.2s ease",
       }}
     >
       <input
@@ -110,7 +109,7 @@ function TodoList() {
             className="btn-icon"
             style={{ background: "var(--accent)", color: "#fff" }}
           >
-            <FiCheck size={15} />
+            <FiCheck size={16} />
           </button>
           <button
             onClick={handleCancelEdit}
@@ -118,7 +117,7 @@ function TodoList() {
             className="btn-icon"
             style={{ background: "var(--danger-subtle)", color: "var(--danger)" }}
           >
-            <FiX size={15} />
+            <FiX size={16} />
           </button>
         </>
       ) : (
@@ -129,7 +128,7 @@ function TodoList() {
             className="btn-icon"
             style={{ background: "var(--accent-subtle)", color: "var(--text-muted)" }}
           >
-            <FiEdit2 size={14} />
+            <FiEdit2 size={16} />
           </button>
           <button
             onClick={() => deleteTodo(todo.id)}
@@ -137,7 +136,7 @@ function TodoList() {
             className="btn-icon"
             style={{ background: "var(--danger-subtle)", color: "var(--danger)" }}
           >
-            <FiTrash2 size={14} />
+            <FiTrash2 size={16} />
           </button>
         </>
       )}
@@ -145,14 +144,7 @@ function TodoList() {
   );
 
   return (
-    <div
-      className="card-modern"
-      style={{
-        padding: "2rem",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="card-modern p-4 d-flex flex-column fade-in" style={{ minHeight: '600px' }}>
       {/* Add Task Form */}
       <form onSubmit={handleAddTodo} className="mb-4">
         <div className="d-flex gap-2">
@@ -167,10 +159,10 @@ function TodoList() {
           />
           <button
             type="submit"
-            className="btn-accent d-flex align-items-center gap-1"
+            className="btn-accent d-flex align-items-center gap-2"
             style={{ whiteSpace: "nowrap" }}
           >
-            <FiPlus size={16} />
+            <FiPlus size={18} />
             Add
           </button>
         </div>
@@ -178,22 +170,24 @@ function TodoList() {
 
       {/* Progress */}
       <div
-        className="mb-3 text-center"
+        className="mb-4 text-center d-flex align-items-center justify-content-center gap-2"
         style={{
-          padding: "0.5rem 1rem",
-          background: "var(--accent-subtle)",
-          borderRadius: "8px",
+          padding: "0.75rem",
+          background: "var(--bg-primary)",
+          borderRadius: "12px",
+          border: "1px solid var(--border-color)",
         }}
       >
+        <FiList size={16} className="text-muted" />
         <span
           style={{
-            fontSize: "0.85rem",
+            fontSize: "0.9rem",
             fontWeight: 600,
             color: "var(--text-secondary)",
           }}
         >
           {completedCount} of {totalCount} tasks completed
-          {totalCount > 0 && completedCount === totalCount && " — all done!"}
+          {totalCount > 0 && completedCount === totalCount && " — All done! 🎉"}
         </span>
       </div>
 
@@ -201,29 +195,36 @@ function TodoList() {
       <div style={{ flex: 1, overflowY: "auto" }}>
         {activeTodos.length === 0 && completedTodos.length === 0 ? (
           <div
-            className="text-center py-5"
+            className="text-center py-5 d-flex flex-column align-items-center justify-content-center"
             style={{
-              background: "var(--input-bg)",
-              borderRadius: "12px",
-              border: "1px dashed var(--border-color)",
+              height: '100%',
+              minHeight: '200px',
+              border: "2px dashed var(--border-color)",
+              borderRadius: "16px",
+              background: "rgba(255,255,255,0.02)"
             }}
           >
-            <p
-              style={{
-                color: "var(--text-muted)",
-                fontWeight: 500,
-                margin: 0,
-                fontSize: "0.9rem",
-              }}
-            >
+             <div style={{
+                width: 60, height: 60, 
+                borderRadius: '50%', 
+                background: 'var(--accent-subtle)', 
+                color:'var(--accent)', 
+                display:'flex', 
+                alignItems:'center', 
+                justifyContent:'center',
+                marginBottom: '1rem'
+              }}>
+                <FiList size={24}/>
+              </div>
+            <p className="text-muted fw-bold">
               No tasks yet. Add your first task above!
             </p>
           </div>
         ) : (
           <>
             {activeTodos.length > 0 && (
-              <div className="mb-3">
-                <div className="section-label mb-2" style={{ paddingLeft: 4 }}>
+              <div className="mb-4">
+                <div className="section-label mb-2 px-1">
                   Active ({activeTodos.length})
                 </div>
                 {activeTodos.map((todo) => renderTodoItem(todo, false))}
@@ -232,7 +233,7 @@ function TodoList() {
 
             {completedTodos.length > 0 && (
               <div>
-                <div className="section-label mb-2" style={{ paddingLeft: 4 }}>
+                <div className="section-label mb-2 px-1">
                   Completed ({completedTodos.length})
                 </div>
                 {completedTodos.map((todo) => renderTodoItem(todo, true))}

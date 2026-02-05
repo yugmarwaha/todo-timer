@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { FiEdit3 } from "react-icons/fi";
+import { FiEdit3, FiCheck } from "react-icons/fi";
 import Timer from "../components/Timer";
 import Quotes from "../components/Quotes";
 import { useTodo } from "../context/TodoContext";
@@ -10,7 +10,7 @@ function TimerPage() {
   const topTasks = getTopTasks(3);
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper fade-in">
       <div className="container">
         <div className="page-header">
           <h1>Productivity Timer</h1>
@@ -20,44 +20,50 @@ function TimerPage() {
         <div className="timer-layout">
           <div>
             <Timer />
-            <div className="mt-3">
+            <div className="mt-4">
               <Quotes />
             </div>
           </div>
 
           <div>
             {/* Task Summary Sidebar */}
-            <div className="card-modern" style={{ padding: "1.5rem" }}>
+            <div className="card-modern p-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <span className="section-label">Current Tasks</span>
                 <button
-                  className="btn-accent d-flex align-items-center gap-1"
+                  className="btn-ghost d-flex align-items-center gap-1"
                   onClick={() => navigate("/todo")}
-                  style={{ padding: "0.375rem 0.75rem", fontSize: "0.75rem" }}
+                  style={{ padding: "0.25rem 0.75rem", fontSize: "0.8rem" }}
                 >
-                  <FiEdit3 size={12} />
+                  <FiEdit3 size={14} />
                   Edit
                 </button>
               </div>
 
               {topTasks.length === 0 ? (
                 <div
-                  className="text-center py-4"
+                  className="text-center py-5 d-flex flex-column align-items-center justify-content-center"
                   style={{
                     background: "var(--input-bg)",
-                    borderRadius: "10px",
-                    border: "1px dashed var(--border-color)",
+                    borderRadius: "16px",
+                    border: "2px dashed var(--border-color)",
+                    minHeight: "160px"
                   }}
                 >
-                  <p
-                    style={{
-                      color: "var(--text-muted)",
-                      fontWeight: 500,
-                      margin: 0,
-                      fontSize: "0.85rem",
-                    }}
-                  >
-                    All tasks completed!
+                   <div style={{
+                     width: 40, height: 40, 
+                     borderRadius: '50%', 
+                     background: 'var(--success-subtle)', 
+                     color:'var(--success)', 
+                     display:'flex', 
+                     alignItems:'center', 
+                     justifyContent:'center',
+                     marginBottom: '1rem'
+                   }}>
+                     <FiCheck size={20}/>
+                   </div>
+                  <p className="text-muted fw-500 m-0">
+                    All set! No pending tasks.
                   </p>
                 </div>
               ) : (
@@ -65,12 +71,13 @@ function TimerPage() {
                   {topTasks.map((task) => (
                     <div
                       key={task.id}
-                      className="d-flex align-items-center gap-2"
+                      className="d-flex align-items-center gap-3"
                       style={{
-                        padding: "0.625rem 0.75rem",
-                        background: "var(--input-bg)",
-                        borderRadius: "8px",
+                        padding: "0.75rem 1rem",
+                        background: "var(--bg-primary)",
+                        borderRadius: "12px",
                         border: "1px solid var(--border-color)",
+                        transition: 'all 0.2s ease'
                       }}
                     >
                       <input
@@ -79,8 +86,8 @@ function TimerPage() {
                         onChange={() => toggleTodo(task.id)}
                         aria-label={`Toggle task: ${task.text}`}
                         style={{
-                          width: 16,
-                          height: 16,
+                          width: 18,
+                          height: 18,
                           cursor: "pointer",
                           accentColor: "var(--accent)",
                           flexShrink: 0,
@@ -90,11 +97,13 @@ function TimerPage() {
                         style={{
                           flex: 1,
                           fontWeight: 500,
-                          fontSize: "0.875rem",
+                          fontSize: "0.95rem",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                           color: "var(--text-primary)",
+                          textDecoration: task.completed ? 'line-through' : 'none',
+                          opacity: task.completed ? 0.6 : 1
                         }}
                       >
                         {task.text}
@@ -104,12 +113,11 @@ function TimerPage() {
 
                   {activeTodos.length > 3 && (
                     <div
+                      className="text-center mt-2"
                       style={{
-                        textAlign: "center",
-                        padding: "0.375rem",
                         color: "var(--text-muted)",
-                        fontSize: "0.75rem",
-                        fontWeight: 500,
+                        fontSize: "0.8rem",
+                        fontWeight: 600,
                       }}
                     >
                       +{activeTodos.length - 3} more task
