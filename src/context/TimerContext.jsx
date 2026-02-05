@@ -161,11 +161,29 @@ export function TimerProvider({ children }) {
 
   const setTime = useCallback(
     (newHours = 0, newMinutes = 0, newSeconds = 0) => {
-      const clampedHours = Math.max(0, Math.min(23, newHours));
-      const clampedMinutes = Math.max(0, Math.min(59, newMinutes));
-      const clampedSeconds = Math.max(0, Math.min(59, newSeconds));
+      let h = parseInt(newHours) || 0;
+      let m = parseInt(newMinutes) || 0;
+      let s = parseInt(newSeconds) || 0;
 
-      // Ensure at least 1 second is set
+      // Normalize seconds
+      if (s >= 60) {
+        m += Math.floor(s / 60);
+        s = s % 60;
+      }
+
+      // Normalize minutes
+      if (m >= 60) {
+        h += Math.floor(m / 60);
+        m = m % 60;
+      }
+
+      // Clamp hours to logical max (e.g., 23 or 99)
+      const clampedHours = Math.max(0, Math.min(23, h));
+      const clampedMinutes = Math.max(0, Math.min(59, m));
+      const clampedSeconds = Math.max(0, Math.min(59, s));
+
+      // Ensure at least 1 second is set if everything is 0 (unless we strictly want 0)
+      // Original logic forced 1s minimum, keeping it for consistency.
       if (clampedHours === 0 && clampedMinutes === 0 && clampedSeconds === 0) {
         setInitialMinutes(1);
         setMinutes(1);
