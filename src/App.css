@@ -224,6 +224,17 @@
 }
 
 /* ═══════════════════════════════════
+   TIMER LAYOUT
+   ═══════════════════════════════════ */
+.timer-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════
    TIMER
    ═══════════════════════════════════ */
 .timer-card {
@@ -459,5 +470,9 @@
 
   .timer-card {
     padding: 1.5rem;
+  }
+
+  .timer-layout {
+    grid-template-columns: 1fr;
   }
 }

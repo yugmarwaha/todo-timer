@@ -1,4 +1,3 @@
-import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { FiEdit3 } from "react-icons/fi";
 import Timer from "../components/Timer";
@@ -12,21 +11,21 @@ function TimerPage() {
 
   return (
     <div className="page-wrapper">
-      <Container>
+      <div className="container">
         <div className="page-header">
           <h1>Productivity Timer</h1>
           <p>Set a timer and stay focused on what matters.</p>
         </div>
 
-        <Row className="justify-content-center">
-          <Col lg={6} md={8}>
+        <div className="timer-layout">
+          <div>
             <Timer />
             <div className="mt-3">
               <Quotes />
             </div>
-          </Col>
+          </div>
 
-          <Col lg={4} md={8} className="mt-4 mt-lg-0">
+          <div>
             {/* Task Summary Sidebar */}
             <div className="card-modern" style={{ padding: "1.5rem" }}>
               <div className="d-flex justify-content-between align-items-center mb-3">
@@ -120,9 +119,9 @@ function TimerPage() {
                 </div>
               )}
             </div>
-          </Col>
-        </Row>
-      </Container>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
