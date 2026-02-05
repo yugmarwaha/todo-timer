@@ -32,10 +32,10 @@ function Timer() {
   const progressPercentage = totalSeconds > 0 ? (currentSeconds / totalSeconds) * 100 : 0;
 
   const PRESETS = [
-    { time: 1, label: "Quick" },
-    { time: 5, label: "Break" },
-    { time: 25, label: "Focus" },
-    { time: 45, label: "Deep Work" },
+    { time: 25, label: "Pomodoro" },
+    { time: 60, label: "Focus" },
+    { time: 90, label: "Deep Work" },
+    { time: 120, label: "Flow" },
   ];
 
   // SVG circle properties
@@ -143,7 +143,7 @@ function Timer() {
               textAlign: "center",
             }}
           >
-            <div className="timer-display-text">
+            <div className="timer-display-text font-mono">
               {String(hours).padStart(2, "0")}
               <span className="separator">:</span>
               {String(minutes).padStart(2, "0")}
