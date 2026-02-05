@@ -1,4 +1,3 @@
-import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { FiPlay, FiCheckSquare, FiClock, FiTrendingUp } from "react-icons/fi";
 import Quotes from "../components/Quotes";
@@ -8,7 +7,7 @@ function Home() {
 
   return (
     <div className="page-wrapper">
-      <Container style={{ maxWidth: 720 }}>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 1rem" }}>
         {/* Hero */}
         <div
           className="page-header"
@@ -44,84 +43,78 @@ function Home() {
         </div>
 
         {/* Feature cards */}
-        <div className="row g-3 mb-5">
-          <div className="col-md-4">
-            <div
-              className="card-modern text-center p-4"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/timer")}
+        <div className="grid-3 mb-5">
+          <div
+            className="card-modern text-center p-4"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/timer")}
+          >
+            <FiClock
+              size={28}
+              style={{ color: "var(--accent)", marginBottom: "0.75rem" }}
+            />
+            <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
+              Focus Timer
+            </h3>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                color: "var(--text-muted)",
+                margin: 0,
+              }}
             >
-              <FiClock
-                size={28}
-                style={{ color: "var(--accent)", marginBottom: "0.75rem" }}
-              />
-              <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
-                Focus Timer
-              </h3>
-              <p
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--text-muted)",
-                  margin: 0,
-                }}
-              >
-                Customizable countdown with presets for focused work sessions.
-              </p>
-            </div>
+              Customizable countdown with presets for focused work sessions.
+            </p>
           </div>
-          <div className="col-md-4">
-            <div
-              className="card-modern text-center p-4"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/todo")}
+          <div
+            className="card-modern text-center p-4"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/todo")}
+          >
+            <FiCheckSquare
+              size={28}
+              style={{ color: "var(--success)", marginBottom: "0.75rem" }}
+            />
+            <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
+              Task Manager
+            </h3>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                color: "var(--text-muted)",
+                margin: 0,
+              }}
             >
-              <FiCheckSquare
-                size={28}
-                style={{ color: "var(--success)", marginBottom: "0.75rem" }}
-              />
-              <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
-                Task Manager
-              </h3>
-              <p
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--text-muted)",
-                  margin: 0,
-                }}
-              >
-                Create, edit, and track your tasks with progress overview.
-              </p>
-            </div>
+              Create, edit, and track your tasks with progress overview.
+            </p>
           </div>
-          <div className="col-md-4">
-            <div
-              className="card-modern text-center p-4"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate("/streak")}
+          <div
+            className="card-modern text-center p-4"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/streak")}
+          >
+            <FiTrendingUp
+              size={28}
+              style={{ color: "var(--warning)", marginBottom: "0.75rem" }}
+            />
+            <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
+              Streak Tracker
+            </h3>
+            <p
+              style={{
+                fontSize: "0.85rem",
+                color: "var(--text-muted)",
+                margin: 0,
+              }}
             >
-              <FiTrendingUp
-                size={28}
-                style={{ color: "var(--warning)", marginBottom: "0.75rem" }}
-              />
-              <h3 style={{ fontSize: "1rem", marginBottom: "0.375rem" }}>
-                Streak Tracker
-              </h3>
-              <p
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--text-muted)",
-                  margin: 0,
-                }}
-              >
-                Visualize your consistency with a contribution calendar.
-              </p>
-            </div>
+              Visualize your consistency with a contribution calendar.
+            </p>
           </div>
         </div>
 
         {/* Quote */}
         <Quotes />
-      </Container>
+      </div>
     </div>
   );
 }
