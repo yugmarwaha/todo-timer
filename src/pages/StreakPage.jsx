@@ -1,4 +1,3 @@
-import { Container } from "react-bootstrap";
 import { useStreak } from "../context/StreakContext";
 import { generateDateRange } from "../services/streakService";
 import { useMemo, useState, useEffect } from "react";
@@ -116,7 +115,7 @@ function StreakPage() {
 
   return (
     <div className="page-wrapper">
-      <Container>
+      <div className="container">
         <div className="page-header">
           <h1>Focus Streak</h1>
           <p>Track your daily focus sessions and build consistency.</p>
@@ -292,7 +291,7 @@ function StreakPage() {
             <span>More</span>
           </div>
         </div>
-      </Container>
+      </div>
     </div>
   );
 }
