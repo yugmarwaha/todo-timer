@@ -21,9 +21,20 @@ export function computeDailyStats(sessions, days) {
     byDate[s.date].totalSeconds += s.durationSeconds;
   });
 
+  // Determine range: fixed period or earliest session to today
+  let numDays = days;
+  if (!numDays) {
+    if (filtered.length > 0) {
+      const earliest = Math.min(...filtered.map((s) => s.completedAt));
+      numDays = Math.ceil((Date.now() - earliest) / 86400000) + 1;
+      numDays = Math.max(numDays, 7); // at least 7 days
+    } else {
+      numDays = 30;
+    }
+  }
+
   // Fill missing days
   const result = [];
-  const numDays = days || 30;
   for (let i = numDays - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);

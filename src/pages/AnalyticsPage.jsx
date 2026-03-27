@@ -16,7 +16,6 @@ import {
 } from "recharts";
 import { useSession } from "../context/SessionContext";
 import { useTodo } from "../context/TodoContext";
-import { useStreak } from "../context/StreakContext";
 import {
   computeDailyStats,
   computeWeeklyStats,
@@ -46,7 +45,6 @@ const PERIODS = [
 function AnalyticsPage() {
   const { sessions } = useSession();
   const { todos } = useTodo();
-  const { totalCompletions } = useStreak();
   const [period, setPeriod] = useState(30);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
