@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { FiPlay, FiCheckSquare, FiClock, FiTrendingUp } from "react-icons/fi";
+import { FiPlay, FiCheckSquare, FiClock, FiTrendingUp, FiBarChart2 } from "react-icons/fi";
 import Quotes from "../components/Quotes";
 
 function Home() {
@@ -108,6 +108,32 @@ function Home() {
             </h3>
             <p className="text-muted" style={{ fontSize: "0.95rem" }}>
               Visualize your consistency with a contribution calendar.
+            </p>
+          </div>
+
+          <div
+            className="card-modern text-center p-4"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/analytics")}
+          >
+            <div className="mb-3 d-flex justify-content-center">
+              <span style={{
+                width: 50, height: 50,
+                background: 'var(--warning-subtle, rgba(245, 158, 11, 0.1))',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--warning, #f59e0b)'
+              }}>
+                <FiBarChart2 size={24} />
+              </span>
+            </div>
+            <h3 className="mb-2" style={{ fontSize: "1.25rem" }}>
+              Analytics
+            </h3>
+            <p className="text-muted" style={{ fontSize: "0.95rem" }}>
+              Track productivity trends with charts and session insights.
             </p>
           </div>
         </div>

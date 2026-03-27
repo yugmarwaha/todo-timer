@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Routes, Route, NavLink } from "react-router";
-import { FiClock, FiHome, FiCheckSquare, FiTrendingUp, FiMenu, FiX } from "react-icons/fi";
+import { FiClock, FiHome, FiCheckSquare, FiTrendingUp, FiBarChart2, FiMenu, FiX } from "react-icons/fi";
 import Home from "./pages/Home";
 import TimerPage from "./pages/TimerPage";
 import TodoPage from "./pages/TodoPage";
 import StreakPage from "./pages/StreakPage";
+const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 import DarkModeToggle from "./components/DarkModeToggle";
 import { TimerProvider } from "./context/TimerContext";
 import { TodoProvider } from "./context/TodoContext";
@@ -56,6 +57,10 @@ function App() {
                     <FiTrendingUp size={15} />
                     <span>Streaks</span>
                   </NavLink>
+                  <NavLink to="/analytics" className="nav-pill" onClick={closeMenu}>
+                    <FiBarChart2 size={15} />
+                    <span>Analytics</span>
+                  </NavLink>
                 </div>
                 <div className="navbar-actions">
                   <DarkModeToggle />
@@ -69,6 +74,11 @@ function App() {
             <Route path="/timer" element={<TimerPage />} />
             <Route path="/todo" element={<TodoPage />} />
             <Route path="/streak" element={<StreakPage />} />
+            <Route path="/analytics" element={
+              <Suspense fallback={<div className="page-wrapper"><div className="container text-center" style={{ padding: "4rem 0" }}>Loading...</div></div>}>
+                <AnalyticsPage />
+              </Suspense>
+            } />
           </Routes>
           </TodoProvider>
         </SessionProvider>
