@@ -1,0 +1,113 @@
+export function formatDuration(totalSeconds) {
+  if (!totalSeconds || totalSeconds <= 0) return "0m";
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  if (h > 0 && m > 0) return `${h}h ${m}m`;
+  if (h > 0) return `${h}h`;
+  if (m > 0) return `${m}m`;
+  return `${totalSeconds}s`;
+}
+
+export function computeDailyStats(sessions, days) {
+  const cutoff = days ? Date.now() - days * 86400000 : 0;
+  const filtered = sessions.filter((s) => s.completedAt >= cutoff);
+  const byDate = {};
+
+  filtered.forEach((s) => {
+    if (!byDate[s.date]) {
+      byDate[s.date] = { date: s.date, count: 0, totalSeconds: 0 };
+    }
+    byDate[s.date].count++;
+    byDate[s.date].totalSeconds += s.durationSeconds;
+  });
+
+  // Fill missing days
+  const result = [];
+  const numDays = days || 30;
+  for (let i = numDays - 1; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split("T")[0];
+    result.push(byDate[key] || { date: key, count: 0, totalSeconds: 0 });
+  }
+  return result;
+}
+
+export function computeWeeklyStats(sessions, weeks = 12) {
+  const cutoff = Date.now() - weeks * 7 * 86400000;
+  const filtered = sessions.filter((s) => s.completedAt >= cutoff);
+  const byWeek = {};
+
+  filtered.forEach((s) => {
+    const d = new Date(s.completedAt);
+    const startOfWeek = new Date(d);
+    startOfWeek.setDate(d.getDate() - d.getDay());
+    const key = startOfWeek.toISOString().split("T")[0];
+    if (!byWeek[key]) {
+      byWeek[key] = { week: key, count: 0, totalSeconds: 0 };
+    }
+    byWeek[key].count++;
+    byWeek[key].totalSeconds += s.durationSeconds;
+  });
+
+  return Object.values(byWeek).sort((a, b) => a.week.localeCompare(b.week));
+}
+
+export function computeTaskTimeDistribution(sessions, todos) {
+  const byTask = {};
+
+  sessions.forEach((s) => {
+    if (!s.taskId) return;
+    if (!byTask[s.taskId]) {
+      const todo = todos.find((t) => t.id === s.taskId);
+      byTask[s.taskId] = {
+        taskId: s.taskId,
+        name: todo ? todo.text : "Deleted Task",
+        totalSeconds: 0,
+        sessionCount: 0,
+      };
+    }
+    byTask[s.taskId].totalSeconds += s.durationSeconds;
+    byTask[s.taskId].sessionCount++;
+  });
+
+  return Object.values(byTask).sort(
+    (a, b) => b.totalSeconds - a.totalSeconds
+  );
+}
+
+export function computeCompletionRate(todos) {
+  const total = todos.length;
+  const completed = todos.filter((t) => t.completed).length;
+  const active = total - completed;
+  const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+  return { total, completed, active, rate };
+}
+
+export function computeAverageSessionLength(sessions) {
+  if (sessions.length === 0) return 0;
+  const total = sessions.reduce((sum, s) => sum + s.durationSeconds, 0);
+  return Math.round(total / sessions.length);
+}
+
+export function computeStreakInsights(streakData) {
+  const entries = Object.entries(streakData);
+  const activeDays = entries.filter(([, count]) => count > 0).length;
+  const totalSessions = entries.reduce(
+    (sum, [, count]) => sum + count,
+    0
+  );
+  const averageDailySessions =
+    activeDays > 0 ? Math.round((totalSessions / activeDays) * 10) / 10 : 0;
+
+  let mostProductiveDay = null;
+  let maxCount = 0;
+  entries.forEach(([date, count]) => {
+    if (count > maxCount) {
+      maxCount = count;
+      mostProductiveDay = date;
+    }
+  });
+
+  return { averageDailySessions, activeDays, mostProductiveDay, maxCount };
+}

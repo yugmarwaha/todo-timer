@@ -5,6 +5,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { setOnSessionLogged } from "./SessionContext";
 
 const TodoContext = createContext(null);
 
@@ -16,28 +17,38 @@ const DEFAULT_TODOS = [
     text: "Create todo timer app",
     completed: false,
     createdAt: Date.now(),
+    totalTimeSeconds: 0,
   },
   {
     id: 2,
     text: "Add timer functionality",
     completed: false,
     createdAt: Date.now() + 1,
+    totalTimeSeconds: 0,
   },
   {
     id: 3,
     text: "Deploy to GitHub Pages",
     completed: false,
     createdAt: Date.now() + 2,
+    totalTimeSeconds: 0,
   },
 ];
 
+// Migrate old todos that lack totalTimeSeconds
+function migrateTodos(todos) {
+  return todos.map((t) => ({
+    ...t,
+    totalTimeSeconds: t.totalTimeSeconds || 0,
+  }));
+}
+
 export function TodoProvider({ children }) {
   const [todos, setTodos] = useState(() => {
-    // Load from localStorage on initial mount
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        return migrateTodos(JSON.parse(stored));
       }
     } catch (error) {
       console.error("Failed to load todos from localStorage:", error);
@@ -61,6 +72,7 @@ export function TodoProvider({ children }) {
         text: text.trim(),
         completed: false,
         createdAt: Date.now(),
+        totalTimeSeconds: 0,
       };
       setTodos((prev) => [...prev, newTodo]);
     }
@@ -87,6 +99,24 @@ export function TodoProvider({ children }) {
       );
     }
   }, []);
+
+  const addTimeToTodo = useCallback((taskId, seconds) => {
+    setTodos((prev) =>
+      prev.map((todo) =>
+        todo.id === taskId
+          ? { ...todo, totalTimeSeconds: (todo.totalTimeSeconds || 0) + seconds }
+          : todo
+      )
+    );
+  }, []);
+
+  // Register callback for session logging
+  useEffect(() => {
+    setOnSessionLogged((taskId, seconds) => {
+      addTimeToTodo(taskId, seconds);
+    });
+    return () => setOnSessionLogged(null);
+  }, [addTimeToTodo]);
 
   // Derived state
   const activeTodos = todos.filter((t) => !t.completed);
@@ -116,6 +146,7 @@ export function TodoProvider({ children }) {
     toggleTodo,
     deleteTodo,
     editTodo,
+    addTimeToTodo,
     getTopTasks,
   };
 

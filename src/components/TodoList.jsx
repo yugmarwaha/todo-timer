@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { FiTrash2, FiEdit2, FiCheck, FiX, FiPlus, FiList } from "react-icons/fi";
+import { FiTrash2, FiEdit2, FiCheck, FiX, FiPlus, FiList, FiClock } from "react-icons/fi";
 import { useTodo } from "../context/TodoContext";
+import { formatDuration } from "../services/analyticsService";
 
 function TodoList() {
   const {
@@ -88,17 +89,41 @@ function TodoList() {
           autoFocus
         />
       ) : (
-        <span
-          style={{
-            flex: 1,
-            fontWeight: 500,
-            fontSize: "0.95rem",
-            textDecoration: isCompleted ? "line-through" : "none",
-            color: isCompleted ? "var(--text-muted)" : "var(--text-primary)",
-          }}
-        >
-          {todo.text}
-        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span
+            style={{
+              fontWeight: 500,
+              fontSize: "0.95rem",
+              textDecoration: isCompleted ? "line-through" : "none",
+              color: isCompleted ? "var(--text-muted)" : "var(--text-primary)",
+              display: "block",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {todo.text}
+          </span>
+          {todo.totalTimeSeconds > 0 && (
+            <span
+              style={{
+                fontSize: "0.72rem",
+                color: "var(--text-muted)",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.25rem",
+                marginTop: "2px",
+                background: "var(--accent-subtle)",
+                padding: "1px 6px",
+                borderRadius: "99px",
+                fontWeight: 600,
+              }}
+            >
+              <FiClock size={10} />
+              {formatDuration(todo.totalTimeSeconds)}
+            </span>
+          )}
+        </div>
       )}
 
       {editingId === todo.id ? (

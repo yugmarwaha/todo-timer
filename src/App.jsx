@@ -9,6 +9,7 @@ import DarkModeToggle from "./components/DarkModeToggle";
 import { TimerProvider } from "./context/TimerContext";
 import { TodoProvider } from "./context/TodoContext";
 import { StreakProvider } from "./context/StreakContext";
+import { SessionProvider } from "./context/SessionContext";
 import "./App.css";
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
   return (
     <TimerProvider>
       <StreakProvider>
-        <TodoProvider>
+        <SessionProvider>
+          <TodoProvider>
           <nav className="navbar-glass">
             <div className="navbar-inner">
               <NavLink to="/" className="navbar-brand" onClick={closeMenu}>
@@ -68,7 +70,8 @@ function App() {
             <Route path="/todo" element={<TodoPage />} />
             <Route path="/streak" element={<StreakPage />} />
           </Routes>
-        </TodoProvider>
+          </TodoProvider>
+        </SessionProvider>
       </StreakProvider>
     </TimerProvider>
   );

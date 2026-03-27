@@ -10,11 +10,16 @@ import timerSound from "../assets/sound/620584__nightcustard__six-oclock-westmin
 
 const TimerContext = createContext(null);
 
-// Callback ref to be set by StreakProvider
+// Callback refs for cross-context communication
 let onTimerCompleteCallback = null;
+let onSessionCompleteCallback = null;
 
 export function setOnTimerComplete(callback) {
   onTimerCompleteCallback = callback;
+}
+
+export function setOnSessionComplete(callback) {
+  onSessionCompleteCallback = callback;
 }
 
 // Helpers for deadline-based timer
@@ -87,9 +92,14 @@ export function TimerProvider({ children }) {
             setIsSoundPlaying(false);
           };
 
-          // Trigger streak increment
+          // Trigger callbacks with completed duration
+          const completedDuration =
+            initialHours * 3600 + initialMinutes * 60 + initialSeconds;
           if (onTimerCompleteCallback) {
-            onTimerCompleteCallback();
+            onTimerCompleteCallback(completedDuration);
+          }
+          if (onSessionCompleteCallback) {
+            onSessionCompleteCallback(completedDuration);
           }
 
           // Reset to initial time
