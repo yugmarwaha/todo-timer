@@ -294,42 +294,55 @@ function AnalyticsPage() {
                   Time Per Task
                 </div>
                 {taskDistribution.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={250}>
-                    <PieChart>
-                      <Pie
-                        data={taskDistribution}
-                        dataKey="totalSeconds"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={90}
-                        innerRadius={50}
-                        paddingAngle={2}
-                        label={({ name, percent }) =>
-                          `${name.length > 15 ? name.slice(0, 15) + "…" : name} (${(percent * 100).toFixed(0)}%)`
-                        }
-                      >
-                        {taskDistribution.map((_, i) => (
-                          <Cell
-                            key={i}
-                            fill={CHART_COLORS[i % CHART_COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          background: tooltipBg,
-                          border: `1px solid ${tooltipBorder}`,
-                          borderRadius: 8,
-                          fontSize: 13,
-                        }}
-                        formatter={(value) => [
-                          formatDuration(value),
-                          "Time",
-                        ]}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <PieChart>
+                        <Pie
+                          data={taskDistribution}
+                          dataKey="totalSeconds"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={85}
+                          innerRadius={48}
+                          paddingAngle={2}
+                        >
+                          {taskDistribution.map((_, i) => (
+                            <Cell
+                              key={i}
+                              fill={CHART_COLORS[i % CHART_COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            background: tooltipBg,
+                            border: `1px solid ${tooltipBorder}`,
+                            borderRadius: 8,
+                            fontSize: 13,
+                          }}
+                          formatter={(value) => [
+                            formatDuration(value),
+                            "Time",
+                          ]}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", justifyContent: "center", marginTop: "0.5rem" }}>
+                      {taskDistribution.map((item, i) => (
+                        <div key={item.taskId} style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.8rem" }}>
+                          <div style={{ width: 10, height: 10, borderRadius: "50%", background: CHART_COLORS[i % CHART_COLORS.length], flexShrink: 0 }} />
+                          <span style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
+                            {item.name.length > 20 ? item.name.slice(0, 20) + "…" : item.name}
+                          </span>
+                          <span style={{ color: "var(--text-muted)", fontWeight: 600 }}>
+                            {formatDuration(item.totalSeconds)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+
                 ) : (
                   <div
                     className="analytics-empty"
