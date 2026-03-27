@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FiPlay, FiPause, FiRefreshCw, FiVolumeX } from "react-icons/fi";
 import { useTimer } from "../context/TimerContext";
 
@@ -25,6 +25,19 @@ function Timer() {
   const [editHours, setEditHours] = useState("");
   const [editMinutes, setEditMinutes] = useState("");
   const [editSeconds, setEditSeconds] = useState("");
+  const editContainerRef = useRef(null);
+
+  // Click outside edit inputs to apply and close
+  useEffect(() => {
+    if (!isEditingTime) return;
+    const handleClickOutside = (e) => {
+      if (editContainerRef.current && !editContainerRef.current.contains(e.target)) {
+        applyEditedTime();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isEditingTime, editHours, editMinutes, editSeconds]);
 
   const totalSeconds =
     initialHours * 3600 + initialMinutes * 60 + initialSeconds;
@@ -135,12 +148,14 @@ function Timer() {
 
           {/* Time display */}
           <div
+            onClick={handleTimeClick}
             style={{
               position: "absolute",
               top: "50%",
               left: "50%",
               transform: "translate(-50%, -50%)",
               textAlign: "center",
+              cursor: !isRunning && !isPaused ? "pointer" : "default",
             }}
           >
             <div className="timer-display-text font-mono">
@@ -157,7 +172,7 @@ function Timer() {
         {!isRunning && !isPaused && (
           <div className="text-center mb-4" style={{ width: "100%", maxWidth: 320 }}>
             {isEditingTime ? (
-              <div className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+              <div ref={editContainerRef} className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
                 <div className="d-flex align-items-center gap-1">
                   <input
                     type="number"
@@ -166,7 +181,6 @@ function Timer() {
                     value={editHours}
                     onChange={handleFieldChange(setEditHours, 23)}
                     onKeyDown={handleTimeEditKeyDown}
-                    onBlur={applyEditedTime}
                     autoFocus
                     placeholder="0"
                     aria-label="Hours"
