@@ -8,24 +8,36 @@ export function formatDuration(totalSeconds) {
   return `${totalSeconds}s`;
 }
 
+// Normalize timestamps: API returns ISO strings, computations need numbers/YYYY-MM-DD
+function toTimestamp(val) {
+  if (typeof val === "number") return val;
+  return new Date(val).getTime();
+}
+
+function toDateKey(val) {
+  if (typeof val === "string" && /^\d{4}-\d{2}-\d{2}$/.test(val)) return val;
+  return new Date(val).toISOString().split("T")[0];
+}
+
 export function computeDailyStats(sessions, days) {
   const cutoff = days ? Date.now() - days * 86400000 : 0;
-  const filtered = sessions.filter((s) => s.completedAt >= cutoff);
+  const filtered = sessions.filter((s) => toTimestamp(s.completedAt) >= cutoff);
   const byDate = {};
 
   filtered.forEach((s) => {
-    if (!byDate[s.date]) {
-      byDate[s.date] = { date: s.date, count: 0, totalSeconds: 0 };
+    const dateKey = toDateKey(s.date || s.completedAt);
+    if (!byDate[dateKey]) {
+      byDate[dateKey] = { date: dateKey, count: 0, totalSeconds: 0 };
     }
-    byDate[s.date].count++;
-    byDate[s.date].totalSeconds += s.durationSeconds;
+    byDate[dateKey].count++;
+    byDate[dateKey].totalSeconds += s.durationSeconds;
   });
 
   // Determine range: fixed period or earliest session to today
   let numDays = days;
   if (!numDays) {
     if (filtered.length > 0) {
-      const earliest = Math.min(...filtered.map((s) => s.completedAt));
+      const earliest = Math.min(...filtered.map((s) => toTimestamp(s.completedAt)));
       numDays = Math.ceil((Date.now() - earliest) / 86400000) + 1;
       numDays = Math.max(numDays, 7); // at least 7 days
     } else {
@@ -46,7 +58,7 @@ export function computeDailyStats(sessions, days) {
 
 export function computeWeeklyStats(sessions, weeks = 12) {
   const cutoff = Date.now() - weeks * 7 * 86400000;
-  const filtered = sessions.filter((s) => s.completedAt >= cutoff);
+  const filtered = sessions.filter((s) => toTimestamp(s.completedAt) >= cutoff);
   const byWeek = {};
 
   filtered.forEach((s) => {

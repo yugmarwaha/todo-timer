@@ -65,7 +65,7 @@ function AnalyticsPage() {
   const filteredSessions = useMemo(() => {
     if (!period) return sessions;
     const cutoff = Date.now() - period * 86400000;
-    return sessions.filter((s) => s.completedAt >= cutoff);
+    return sessions.filter((s) => new Date(s.completedAt).getTime() >= cutoff);
   }, [sessions, period]);
 
   const dailyStats = useMemo(
