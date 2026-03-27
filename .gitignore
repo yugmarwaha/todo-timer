@@ -43,3 +43,7 @@ Desktop.ini
 # Temporary files
 *.tmp
 *.temp
+
+# Project notes
+focusflow_project_notes.md
+plan.md

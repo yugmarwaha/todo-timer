@@ -17,6 +17,19 @@ export function setOnTimerComplete(callback) {
   onTimerCompleteCallback = callback;
 }
 
+// Helpers for deadline-based timer
+function msToHMS(ms) {
+  const totalSec = Math.ceil(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  return { h, m, s };
+}
+
+function hmsToMs(h, m, s) {
+  return (h * 3600 + m * 60 + s) * 1000;
+}
+
 export function TimerProvider({ children }) {
   const [initialHours, setInitialHours] = useState(0);
   const [initialMinutes, setInitialMinutes] = useState(25);
@@ -29,84 +42,99 @@ export function TimerProvider({ children }) {
   const [justCompleted, setJustCompleted] = useState(false);
   const [isSoundPlaying, setIsSoundPlaying] = useState(false);
   const intervalRef = useRef(null);
-  const timerFinishedRef = useRef(false);
   const audioRef = useRef(null);
+  const deadlineRef = useRef(null);
+  const remainingMsRef = useRef(null);
+  const justCompletedTimeoutRef = useRef(null);
 
-  // Timer tick logic
+  // Deadline-based timer tick
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
-        setSeconds((prevSeconds) => {
-          if (prevSeconds === 0) {
-            setMinutes((prevMinutes) => {
-              if (prevMinutes === 0) {
-                setHours((prevHours) => {
-                  if (prevHours === 0) {
-                    // Timer finished - clear interval immediately
-                    if (intervalRef.current) {
-                      clearInterval(intervalRef.current);
-                    }
+        const now = Date.now();
+        const remaining = deadlineRef.current - now;
 
-                    setIsRunning(false);
-                    setIsPaused(false);
-                    setJustCompleted(true);
+        if (remaining <= 0) {
+          // Timer finished
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
 
-                    // Reset celebration animation after 2 seconds
-                    setTimeout(() => setJustCompleted(false), 2000);
+          setHours(0);
+          setMinutes(0);
+          setSeconds(0);
+          setIsRunning(false);
+          setIsPaused(false);
+          setJustCompleted(true);
 
-                    // Play timer completion sound
-                    if (audioRef.current) {
-                      audioRef.current.pause();
-                      audioRef.current.currentTime = 0;
-                    }
-                    audioRef.current = new Audio(timerSound);
-                    setIsSoundPlaying(true);
-                    audioRef.current.play().catch((error) => {
-                      console.log("Could not play sound:", error);
-                      setIsSoundPlaying(false);
-                    });
-                    // Stop sound when it finishes playing
-                    audioRef.current.onended = () => {
-                      setIsSoundPlaying(false);
-                    };
+          // Reset celebration after 2 seconds (with cleanup ref)
+          justCompletedTimeoutRef.current = setTimeout(
+            () => setJustCompleted(false),
+            2000
+          );
 
-                    // Trigger streak increment
-                    if (onTimerCompleteCallback) {
-                      onTimerCompleteCallback();
-                    }
-
-                    // Reset to initial time
-                    setTimeout(() => {
-                      setSeconds(initialSeconds);
-                      setMinutes(initialMinutes);
-                      setHours(initialHours);
-                    }, 0);
-                    return initialHours;
-                  }
-                  setMinutes(59);
-                  return prevHours - 1;
-                });
-                return 59;
-              }
-              return prevMinutes - 1;
-            });
-            return 59;
+          // Play completion sound
+          if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
           }
-          return prevSeconds - 1;
-        });
-      }, 1000);
+          audioRef.current = new Audio(timerSound);
+          setIsSoundPlaying(true);
+          audioRef.current.play().catch((error) => {
+            console.log("Could not play sound:", error);
+            setIsSoundPlaying(false);
+          });
+          audioRef.current.onended = () => {
+            setIsSoundPlaying(false);
+          };
+
+          // Trigger streak increment
+          if (onTimerCompleteCallback) {
+            onTimerCompleteCallback();
+          }
+
+          // Reset to initial time
+          setHours(initialHours);
+          setMinutes(initialMinutes);
+          setSeconds(initialSeconds);
+
+          deadlineRef.current = null;
+          remainingMsRef.current = null;
+          return;
+        }
+
+        // Normal tick: derive display from wall clock
+        const { h, m, s } = msToHMS(remaining);
+        setHours(h);
+        setMinutes(m);
+        setSeconds(s);
+      }, 250);
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     }
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
   }, [isRunning, initialHours, initialMinutes, initialSeconds]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (justCompletedTimeoutRef.current) {
+        clearTimeout(justCompletedTimeoutRef.current);
+      }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.onended = null;
+      }
+    };
+  }, []);
 
   const handleStart = useCallback(() => {
     // Stop sound if playing
@@ -115,26 +143,28 @@ export function TimerProvider({ children }) {
       audioRef.current.currentTime = 0;
       setIsSoundPlaying(false);
     }
-    // If starting from X:00:00, adjust to prevent immediate decrement
-    if (seconds === 0) {
-      if (minutes === 0) {
-        if (hours > 0) {
-          setHours((prev) => prev - 1);
-          setMinutes(59);
-          setSeconds(59);
-        }
-      } else {
-        setMinutes((prev) => prev - 1);
-        setSeconds(59);
-      }
+
+    if (isPaused && remainingMsRef.current != null) {
+      // Resume: use the snapshot, no time lost
+      deadlineRef.current = Date.now() + remainingMsRef.current;
+    } else {
+      // Fresh start: compute deadline from current h/m/s
+      const totalMs = hmsToMs(hours, minutes, seconds);
+      if (totalMs <= 0) return;
+      deadlineRef.current = Date.now() + totalMs;
+      remainingMsRef.current = totalMs;
     }
+
     setIsRunning(true);
     setIsPaused(false);
     setJustCompleted(false);
-    timerFinishedRef.current = false;
-  }, [seconds, minutes, hours]);
+  }, [isPaused, hours, minutes, seconds]);
 
   const handlePause = useCallback(() => {
+    // Snapshot remaining time before stopping
+    if (deadlineRef.current) {
+      remainingMsRef.current = Math.max(0, deadlineRef.current - Date.now());
+    }
     setIsRunning(false);
     setIsPaused(true);
     // Stop sound if playing
@@ -151,6 +181,8 @@ export function TimerProvider({ children }) {
     setHours(initialHours);
     setMinutes(initialMinutes);
     setSeconds(initialSeconds);
+    deadlineRef.current = null;
+    remainingMsRef.current = null;
     // Stop sound if playing
     if (audioRef.current) {
       audioRef.current.pause();
@@ -182,8 +214,7 @@ export function TimerProvider({ children }) {
       const clampedMinutes = Math.max(0, Math.min(59, m));
       const clampedSeconds = Math.max(0, Math.min(59, s));
 
-      // Ensure at least 1 second is set if everything is 0 (unless we strictly want 0)
-      // Original logic forced 1s minimum, keeping it for consistency.
+      // Ensure at least 1 second is set if everything is 0
       if (clampedHours === 0 && clampedMinutes === 0 && clampedSeconds === 0) {
         setInitialMinutes(1);
         setMinutes(1);
