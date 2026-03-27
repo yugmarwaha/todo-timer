@@ -7,7 +7,12 @@ export async function api(path, options = {}) {
     ...options,
   });
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error("Server not reachable. Make sure to run 'vercel dev' instead of 'npm run dev'.");
+  }
 
   if (!res.ok) {
     const error = new Error(data.error || "Request failed");
