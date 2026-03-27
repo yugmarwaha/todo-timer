@@ -6,52 +6,51 @@ import {
   useCallback,
 } from "react";
 import {
-  loadStreakData,
-  saveStreakData,
-  incrementTodayCompletion,
   calculateCurrentStreak,
   calculateLongestStreak,
   getTotalCompletions,
 } from "../services/streakService";
-import { setOnTimerComplete } from "./TimerContext";
+import { api } from "../services/api";
+import { setOnStreakUpdate } from "./SessionContext";
 
 const StreakContext = createContext(null);
 
 export function StreakProvider({ children }) {
-  const [streakData, setStreakData] = useState(() => {
-    // Load from localStorage on initial mount
-    return loadStreakData();
-  });
+  const [streakData, setStreakData] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  // Persist to localStorage whenever streak data changes
+  // Fetch streak data from API on mount
   useEffect(() => {
-    saveStreakData(streakData);
-  }, [streakData]);
-
-  // Increment today's completion count
-  const incrementCompletion = useCallback(() => {
-    setStreakData((prev) => incrementTodayCompletion(prev));
+    api("/streaks")
+      .then((data) => setStreakData(data.streaks))
+      .catch((err) => console.error("Failed to load streaks:", err))
+      .finally(() => setLoading(false));
   }, []);
 
-  // Register callback with TimerContext
-  useEffect(() => {
-    setOnTimerComplete(incrementCompletion);
-    return () => setOnTimerComplete(null);
-  }, [incrementCompletion]);
+  // Receive streak updates from SessionContext (after timer completion)
+  const handleStreakUpdate = useCallback((streakEntry) => {
+    setStreakData((prev) => ({
+      ...prev,
+      [streakEntry.date]: streakEntry.count,
+    }));
+  }, []);
 
-  // Derived state
+  useEffect(() => {
+    setOnStreakUpdate(handleStreakUpdate);
+    return () => setOnStreakUpdate(null);
+  }, [handleStreakUpdate]);
+
+  // Derived state (pure computations from streakService)
   const currentStreak = calculateCurrentStreak(streakData);
   const longestStreak = calculateLongestStreak(streakData);
   const totalCompletions = getTotalCompletions(streakData);
 
   const value = {
-    // State
     streakData,
     currentStreak,
     longestStreak,
     totalCompletions,
-    // Actions
-    incrementCompletion,
+    loading,
   };
 
   return (

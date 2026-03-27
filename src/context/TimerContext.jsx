@@ -10,13 +10,8 @@ import timerSound from "../assets/sound/620584__nightcustard__six-oclock-westmin
 
 const TimerContext = createContext(null);
 
-// Callback refs for cross-context communication
-let onTimerCompleteCallback = null;
+// Callback ref for SessionContext (handles all completion logic via API)
 let onSessionCompleteCallback = null;
-
-export function setOnTimerComplete(callback) {
-  onTimerCompleteCallback = callback;
-}
 
 export function setOnSessionComplete(callback) {
   onSessionCompleteCallback = callback;
@@ -92,12 +87,9 @@ export function TimerProvider({ children }) {
             setIsSoundPlaying(false);
           };
 
-          // Trigger callbacks with completed duration
+          // Trigger completion callback (SessionContext handles everything via API)
           const completedDuration =
             initialHours * 3600 + initialMinutes * 60 + initialSeconds;
-          if (onTimerCompleteCallback) {
-            onTimerCompleteCallback(completedDuration);
-          }
           if (onSessionCompleteCallback) {
             onSessionCompleteCallback(completedDuration);
           }

@@ -5,118 +5,91 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { setOnSessionLogged } from "./SessionContext";
+import { api } from "../services/api";
 
 const TodoContext = createContext(null);
 
-const STORAGE_KEY = "todo-timer-app-todos";
+// Callback ref for SessionContext to push todo updates from timer completion
+let onTodoUpdateCallback = null;
 
-const DEFAULT_TODOS = [
-  {
-    id: 1,
-    text: "Create todo timer app",
-    completed: false,
-    createdAt: Date.now(),
-    totalTimeSeconds: 0,
-  },
-  {
-    id: 2,
-    text: "Add timer functionality",
-    completed: false,
-    createdAt: Date.now() + 1,
-    totalTimeSeconds: 0,
-  },
-  {
-    id: 3,
-    text: "Deploy to GitHub Pages",
-    completed: false,
-    createdAt: Date.now() + 2,
-    totalTimeSeconds: 0,
-  },
-];
-
-// Migrate old todos that lack totalTimeSeconds
-function migrateTodos(todos) {
-  return todos.map((t) => ({
-    ...t,
-    totalTimeSeconds: t.totalTimeSeconds || 0,
-  }));
+export function setOnTodoUpdate(callback) {
+  onTodoUpdateCallback = callback;
 }
 
 export function TodoProvider({ children }) {
-  const [todos, setTodos] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        return migrateTodos(JSON.parse(stored));
-      }
-    } catch (error) {
-      console.error("Failed to load todos from localStorage:", error);
-    }
-    return DEFAULT_TODOS;
-  });
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Persist to localStorage whenever todos change
+  // Fetch todos from API on mount
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-    } catch (error) {
-      console.error("Failed to save todos to localStorage:", error);
-    }
-  }, [todos]);
-
-  const addTodo = useCallback((text) => {
-    if (text.trim()) {
-      const newTodo = {
-        id: Date.now(),
-        text: text.trim(),
-        completed: false,
-        createdAt: Date.now(),
-        totalTimeSeconds: 0,
-      };
-      setTodos((prev) => [...prev, newTodo]);
-    }
+    api("/todos")
+      .then((data) => setTodos(data.todos))
+      .catch((err) => console.error("Failed to load todos:", err))
+      .finally(() => setLoading(false));
   }, []);
 
-  const toggleTodo = useCallback((id) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  }, []);
-
-  const deleteTodo = useCallback((id) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id));
-  }, []);
-
-  const editTodo = useCallback((id, newText) => {
-    if (newText.trim()) {
+  // Register callback for receiving todo updates from timer completion
+  const updateTodoFromServer = useCallback((updatedTodo) => {
+    if (updatedTodo) {
       setTodos((prev) =>
-        prev.map((todo) =>
-          todo.id === id ? { ...todo, text: newText.trim() } : todo
-        )
+        prev.map((t) => (t.id === updatedTodo.id ? updatedTodo : t))
       );
     }
   }, []);
 
-  const addTimeToTodo = useCallback((taskId, seconds) => {
-    setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === taskId
-          ? { ...todo, totalTimeSeconds: (todo.totalTimeSeconds || 0) + seconds }
-          : todo
-      )
-    );
+  useEffect(() => {
+    setOnTodoUpdate(updateTodoFromServer);
+    return () => setOnTodoUpdate(null);
+  }, [updateTodoFromServer]);
+
+  const addTodo = useCallback(async (text) => {
+    if (!text.trim()) return;
+    try {
+      const data = await api("/todos", {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      });
+      setTodos((prev) => [...prev, data.todo]);
+    } catch (err) {
+      console.error("Failed to add todo:", err);
+    }
   }, []);
 
-  // Register callback for session logging
-  useEffect(() => {
-    setOnSessionLogged((taskId, seconds) => {
-      addTimeToTodo(taskId, seconds);
-    });
-    return () => setOnSessionLogged(null);
-  }, [addTimeToTodo]);
+  const toggleTodo = useCallback(async (id) => {
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    try {
+      const data = await api(`/todos/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ completed: !todo.completed }),
+      });
+      setTodos((prev) => prev.map((t) => (t.id === id ? data.todo : t)));
+    } catch (err) {
+      console.error("Failed to toggle todo:", err);
+    }
+  }, [todos]);
+
+  const deleteTodo = useCallback(async (id) => {
+    try {
+      await api(`/todos/${id}`, { method: "DELETE" });
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error("Failed to delete todo:", err);
+    }
+  }, []);
+
+  const editTodo = useCallback(async (id, newText) => {
+    if (!newText.trim()) return;
+    try {
+      const data = await api(`/todos/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ text: newText }),
+      });
+      setTodos((prev) => prev.map((t) => (t.id === id ? data.todo : t)));
+    } catch (err) {
+      console.error("Failed to edit todo:", err);
+    }
+  }, []);
 
   // Derived state
   const activeTodos = todos.filter((t) => !t.completed);
@@ -124,29 +97,26 @@ export function TodoProvider({ children }) {
   const completedCount = completedTodos.length;
   const totalCount = todos.length;
 
-  // Get top N incomplete tasks (by creation order)
   const getTopTasks = useCallback(
     (n = 3) => {
-      return activeTodos
-        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
+      return [...activeTodos]
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
         .slice(0, n);
     },
     [activeTodos]
   );
 
   const value = {
-    // State
     todos,
     activeTodos,
     completedTodos,
     completedCount,
     totalCount,
-    // Actions
+    loading,
     addTodo,
     toggleTodo,
     deleteTodo,
     editTodo,
-    addTimeToTodo,
     getTopTasks,
   };
 
