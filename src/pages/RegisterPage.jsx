@@ -33,8 +33,8 @@ function RegisterPage() {
   const displayError = localError || error;
 
   return (
-    <div className="page-wrapper fade-in">
-      <div className="container" style={{ maxWidth: 420 }}>
+    <div className="page-wrapper fade-in d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
+      <div className="container" style={{ maxWidth: 480 }}>
         <div className="page-header" style={{ marginBottom: "2rem" }}>
           <h1>Create Account</h1>
           <p>Start tracking your productivity today.</p>
