@@ -34,11 +34,12 @@ function LoginPage() {
             {error && <div className="alert-error">{error}</div>}
 
             <div className="mb-3">
-              <label className="form-label">
+              <label htmlFor="login-email" className="form-label">
                 <FiMail size={14} />
                 Email
               </label>
               <input
+                id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -49,11 +50,12 @@ function LoginPage() {
             </div>
 
             <div className="mb-4">
-              <label className="form-label">
+              <label htmlFor="login-password" className="form-label">
                 <FiLock size={14} />
                 Password
               </label>
               <input
+                id="login-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

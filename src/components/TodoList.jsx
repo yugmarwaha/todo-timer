@@ -234,6 +234,7 @@ function TodoList() {
                       type="checkbox"
                       checked={subtask.completed}
                       onChange={() => toggleSubtask(todo.id, subtask.id, subtask.completed)}
+                      aria-label={`Mark subtask "${subtask.text}" as ${subtask.completed ? "incomplete" : "complete"}`}
                       style={{
                         width: 14,
                         height: 14,
@@ -252,8 +253,10 @@ function TodoList() {
                       aria-label="Delete subtask"
                       className="btn-icon"
                       style={{
-                        width: 24,
-                        height: 24,
+                        width: 32,
+                        height: 32,
+                        minWidth: 44,
+                        minHeight: 44,
                         background: "transparent",
                         boxShadow: "none",
                         color: "var(--text-muted)",
