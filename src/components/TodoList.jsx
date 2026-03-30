@@ -53,28 +53,14 @@ function TodoList() {
   const renderTodoItem = (todo, isCompleted) => (
     <div
       key={todo.id}
-      className="d-flex align-items-center gap-3 mb-2"
-      style={{
-        padding: "0.75rem 1rem",
-        background: "var(--input-bg)",
-        borderRadius: "12px",
-        border: "1px solid var(--border-color)",
-        opacity: isCompleted ? 0.6 : 1,
-        transition: "all 0.2s ease",
-      }}
+      className={`todo-item d-flex align-items-center gap-3 mb-2 ${isCompleted ? "todo-item--completed" : ""}`}
     >
       <input
         type="checkbox"
         checked={isCompleted}
         onChange={() => toggleTodo(todo.id)}
         aria-label={`Mark ${todo.text} as ${isCompleted ? "incomplete" : "complete"}`}
-        style={{
-          width: 18,
-          height: 18,
-          cursor: "pointer",
-          accentColor: "var(--accent)",
-          flexShrink: 0,
-        }}
+        className="todo-checkbox"
       />
 
       {editingId === todo.id ? (
@@ -90,35 +76,11 @@ function TodoList() {
         />
       ) : (
         <div style={{ flex: 1, minWidth: 0 }}>
-          <span
-            style={{
-              fontWeight: 500,
-              fontSize: "0.95rem",
-              textDecoration: isCompleted ? "line-through" : "none",
-              color: isCompleted ? "var(--text-muted)" : "var(--text-primary)",
-              display: "block",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <span className={`todo-item__text ${isCompleted ? "todo-item__text--completed" : ""}`}>
             {todo.text}
           </span>
           {todo.totalTimeSeconds > 0 && (
-            <span
-              style={{
-                fontSize: "0.72rem",
-                color: "var(--text-muted)",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "0.25rem",
-                marginTop: "2px",
-                background: "var(--accent-subtle)",
-                padding: "1px 6px",
-                borderRadius: "99px",
-                fontWeight: 600,
-              }}
-            >
+            <span className="todo-item__time-badge">
               <FiClock size={10} />
               {formatDuration(todo.totalTimeSeconds)}
             </span>
@@ -194,23 +156,9 @@ function TodoList() {
       </form>
 
       {/* Progress */}
-      <div
-        className="mb-4 text-center d-flex align-items-center justify-content-center gap-2"
-        style={{
-          padding: "0.75rem",
-          background: "var(--bg-primary)",
-          borderRadius: "12px",
-          border: "1px solid var(--border-color)",
-        }}
-      >
+      <div className="progress-bar-wrapper mb-4 text-center d-flex align-items-center justify-content-center gap-2">
         <FiList size={16} className="text-muted" />
-        <span
-          style={{
-            fontSize: "0.9rem",
-            fontWeight: 600,
-            color: "var(--text-secondary)",
-          }}
-        >
+        <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-secondary)" }}>
           {completedCount} of {totalCount} tasks completed
           {totalCount > 0 && completedCount === totalCount && " — All done! 🎉"}
         </span>
@@ -219,28 +167,10 @@ function TodoList() {
       {/* Task Lists */}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {activeTodos.length === 0 && completedTodos.length === 0 ? (
-          <div
-            className="text-center py-5 d-flex flex-column align-items-center justify-content-center"
-            style={{
-              height: '100%',
-              minHeight: '200px',
-              border: "2px dashed var(--border-color)",
-              borderRadius: "16px",
-              background: "rgba(255,255,255,0.02)"
-            }}
-          >
-             <div style={{
-                width: 60, height: 60, 
-                borderRadius: '50%', 
-                background: 'var(--accent-subtle)', 
-                color:'var(--accent)', 
-                display:'flex', 
-                alignItems:'center', 
-                justifyContent:'center',
-                marginBottom: '1rem'
-              }}>
-                <FiList size={24}/>
-              </div>
+          <div className="empty-state" style={{ height: '100%' }}>
+            <div className="icon-badge--lg" style={{ background: 'var(--accent-subtle)', color: 'var(--accent)', marginBottom: '1rem' }}>
+              <FiList size={24}/>
+            </div>
             <p className="text-muted fw-bold">
               No tasks yet. Add your first task above!
             </p>
