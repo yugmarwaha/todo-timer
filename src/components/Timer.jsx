@@ -100,6 +100,11 @@ function Timer() {
         {/* Circular Timer */}
         <div
           className="timer-ring-container"
+          role="progressbar"
+          aria-valuenow={Math.round(progressPercentage)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Timer progress"
           style={{
             width: size,
             height: size,
@@ -135,10 +140,19 @@ function Timer() {
           {/* Time display */}
           <div
             onClick={handleTimeClick}
+            onKeyDown={(e) => {
+              if ((e.key === "Enter" || e.key === " ") && !isRunning && !isPaused) {
+                e.preventDefault();
+                handleTimeClick();
+              }
+            }}
+            role={!isRunning && !isPaused ? "button" : undefined}
+            tabIndex={!isRunning && !isPaused ? 0 : undefined}
+            aria-label={!isRunning && !isPaused ? "Edit timer duration" : undefined}
             className="timer-center-content"
             style={{ cursor: !isRunning && !isPaused ? "pointer" : "default" }}
           >
-            <div className="timer-display-text font-mono">
+            <div className="timer-display-text font-mono" aria-live="polite" role="timer">
               {String(hours).padStart(2, "0")}
               <span>:</span>
               {String(minutes).padStart(2, "0")}
@@ -147,6 +161,9 @@ function Timer() {
             </div>
           </div>
         </div>
+        {justCompleted && (
+          <div aria-live="assertive" className="d-none">Timer complete!</div>
+        )}
 
         {/* Editable time input */}
         {!isRunning && !isPaused && (
