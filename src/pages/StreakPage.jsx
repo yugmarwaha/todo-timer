@@ -27,14 +27,14 @@ function StreakPage() {
   const getColor = (count) => {
     if (isDarkMode) {
       if (count === 0) return "rgba(255, 255, 255, 0.05)";
-      if (count <= 2) return "rgba(99, 102, 241, 0.3)";
-      if (count <= 5) return "rgba(99, 102, 241, 0.6)";
-      return "rgba(99, 102, 241, 1)";
+      if (count <= 2) return "rgba(56, 189, 248, 0.3)";
+      if (count <= 5) return "rgba(56, 189, 248, 0.6)";
+      return "rgba(14, 165, 233, 1)";
     } else {
       if (count === 0) return "rgba(0, 0, 0, 0.08)";
-      if (count <= 2) return "rgba(99, 102, 241, 0.3)";
-      if (count <= 5) return "rgba(99, 102, 241, 0.6)";
-      return "rgba(99, 102, 241, 1)";
+      if (count <= 2) return "rgba(56, 189, 248, 0.3)";
+      if (count <= 5) return "rgba(56, 189, 248, 0.6)";
+      return "rgba(14, 165, 233, 1)";
     }
   };
 
