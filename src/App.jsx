@@ -106,18 +106,20 @@ function AppContent() {
               </div>
             </nav>
 
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/timer" element={<TimerPage />} />
-              <Route path="/todo" element={<TodoPage />} />
-              <Route path="/streak" element={<StreakPage />} />
-              <Route path="/analytics" element={
-                <Suspense fallback={<div className="page-wrapper"><div className="container text-center" style={{ padding: "4rem 0" }}>Loading...</div></div>}>
-                  <AnalyticsPage />
-                </Suspense>
-              } />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/timer" element={<TimerPage />} />
+                <Route path="/todo" element={<TodoPage />} />
+                <Route path="/streak" element={<StreakPage />} />
+                <Route path="/analytics" element={
+                  <Suspense fallback={<div className="page-wrapper"><div className="container text-center" style={{ padding: "4rem 0" }}>Loading...</div></div>}>
+                    <AnalyticsPage />
+                  </Suspense>
+                } />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
           </TodoProvider>
         </SessionProvider>
       </StreakProvider>
