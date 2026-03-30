@@ -328,6 +328,19 @@ input:focus, textarea:focus {
   50% { opacity: 0.3; }
 }
 
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.03); }
+  50% { transform: scale(0.98); }
+  75% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
 @media (max-width: 768px) {
   :root {
     --timer-size: 250px;
