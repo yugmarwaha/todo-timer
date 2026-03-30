@@ -21,10 +21,10 @@
 
   /* Vivid Gradient */
   --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #9333ea 50%, #db2777 100%);
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-subtle: rgba(99, 102, 241, 0.1);
-  --accent-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+  --accent: #38bdf8;
+  --accent-hover: #0ea5e9;
+  --accent-subtle: rgba(56, 189, 248, 0.1);
+  --accent-glow: 0 0 20px rgba(56, 189, 248, 0.3);
 
   --success: #10b981;
   --success-subtle: rgba(16, 185, 129, 0.15);
@@ -76,10 +76,10 @@
   --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 15px rgba(129, 140, 248, 0.1);
 
   --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-  --accent: #818cf8;
-  --accent-hover: #6366f1;
-  --accent-subtle: rgba(129, 140, 248, 0.15);
-  --accent-glow: 0 0 30px rgba(129, 140, 248, 0.4);
+  --accent: #7dd3fc;
+  --accent-hover: #38bdf8;
+  --accent-subtle: rgba(125, 211, 252, 0.15);
+  --accent-glow: 0 0 30px rgba(125, 211, 252, 0.4);
 
   --success: #34d399;
   --success-subtle: rgba(52, 211, 153, 0.15);
@@ -247,8 +247,56 @@ input:focus, textarea:focus {
 
 /* Padding */
 .p-4 { padding: 1.5rem; }
+.px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
 .py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 .py-5 { padding-top: 3rem; padding-bottom: 3rem; }
+
+/* Font weight */
+.fw-500 { font-weight: 500; }
+.fw-bold { font-weight: 700; }
+
+/* Text */
+.text-muted { color: var(--text-muted); }
+
+/* Card Modern — glassmorphism card used across pages */
+.card-modern {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s var(--animation-ease);
+}
+
+/* Section Label — small uppercase heading */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+/* Input Modern — styled form input */
+.input-modern {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.8rem 1rem;
+  border-radius: 16px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.input-modern:focus {
+  outline: none;
+  background: var(--input-focus);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-subtle);
+}
 
 /* Container */
 .container {
