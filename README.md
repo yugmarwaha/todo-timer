@@ -7,7 +7,7 @@ A full-stack productivity app with user authentication, PostgreSQL database, and
 ## Features
 
 - **Focus Timer** — Deadline-based countdown immune to browser tab throttling. SVG circular progress ring, 4 presets, audio notification on completion.
-- **Task Manager** — Full CRUD with time tracking per task. Tasks linked to timer sessions accumulate focus time automatically.
+- **Task Manager** — Full CRUD with time tracking per task. Tasks linked to timer sessions accumulate focus time automatically. Supports **subtasks** — expandable checklists within each task with progress tracking.
 - **Task-Timer Linking** — Select a task before starting a session. On completion, one atomic API call logs the session, increments the streak, and updates the task's time.
 - **Streak Tracker** — GitHub-style 365-day contribution calendar with 4-level heat map and streak statistics.
 - **Analytics Dashboard** — Daily/weekly charts, time-per-task distribution, completion rates, session history. Lazy-loaded with Recharts.
@@ -81,9 +81,19 @@ CREATE TABLE streaks (
   UNIQUE(user_id, date)
 );
 
+CREATE TABLE subtasks (
+  id              SERIAL PRIMARY KEY,
+  todo_id         INTEGER NOT NULL REFERENCES todos(id) ON DELETE CASCADE,
+  user_id         INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  text            TEXT NOT NULL,
+  completed       BOOLEAN DEFAULT FALSE,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE INDEX idx_todos_user ON todos(user_id);
 CREATE INDEX idx_sessions_user ON sessions(user_id);
 CREATE INDEX idx_streaks_user_date ON streaks(user_id, date);
+CREATE INDEX idx_subtasks_todo_id ON subtasks(todo_id);
 ```
 
 ### 3. Configure environment variables
@@ -125,7 +135,7 @@ React Frontend (Vite)
   ├── TimerContext    → deadline-based countdown
   ├── StreakContext   → fetches from GET /api/streaks
   ├── SessionContext  → orchestrates timer completion
-  └── TodoContext     → CRUD via /api/todos
+  └── TodoContext     → CRUD via /api/todos, subtask CRUD via /api/todos/:id/subtasks
 
 Vercel Serverless Functions (/api)
   ├── auth/           → register, login, logout, me
@@ -136,7 +146,7 @@ Vercel Serverless Functions (/api)
   └── active-task     → GET/PUT active task
 
 PostgreSQL (Supabase)
-  └── users, todos, sessions, streaks tables
+  └── users, todos, subtasks, sessions, streaks tables
 ```
 
 **Timer completion flow:** Timer finishes → `POST /api/timer/complete` → single Postgres transaction creates session, upserts streak, updates task time → response updates 3 React contexts via callback refs.
@@ -148,7 +158,7 @@ api/                        Vercel serverless functions
 ├── _db.js                  Postgres connection pool
 ├── _auth.js                JWT + cookie helpers
 ├── auth/                   register, login, logout, me
-├── todos/                  CRUD (index.js + [id].js)
+├── todos/                  CRUD (index.js + [id].js + [id]/subtasks/)
 ├── sessions/index.js       GET sessions
 ├── streaks/index.js        GET streaks
 ├── timer/complete.js       Atomic completion endpoint
