@@ -47,33 +47,11 @@ function Quotes() {
   }, []);
 
   return (
-    <div
-      className="text-center p-4 fade-in"
-      style={{
-        borderRadius: "16px",
-        background: "var(--accent-subtle)",
-        border: "1px solid var(--accent-ring)",
-      }}
-    >
-      <blockquote
-        className="mb-2"
-        style={{
-          fontSize: "1.1rem",
-          fontStyle: "italic",
-          color: "var(--text-secondary)",
-          lineHeight: 1.5,
-        }}
-      >
+    <div className="quotes-card text-center fade-in">
+      <blockquote className="mb-2">
         &ldquo;{currentQuote.text}&rdquo;
       </blockquote>
-      <cite
-        style={{
-          fontSize: "0.9rem",
-          color: "var(--text-muted)",
-          fontWeight: 600,
-          fontStyle: "normal",
-        }}
-      >
+      <cite>
         &mdash; {currentQuote.author}
       </cite>
     </div>
