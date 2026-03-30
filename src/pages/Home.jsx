@@ -34,20 +34,11 @@ function Home() {
         {/* Feature cards */}
         <div className="grid-3 mb-5">
           <div
-            className="card-modern text-center p-4"
-            style={{ cursor: "pointer" }}
+            className="card-modern card-modern--clickable text-center p-4"
             onClick={() => navigate("/timer")}
           >
             <div className="mb-3 d-flex justify-content-center">
-              <span style={{ 
-                width: 50, height: 50, 
-                background: 'var(--accent-subtle)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                color: 'var(--accent)'
-              }}>
+              <span className="icon-badge" style={{ background: 'var(--accent-subtle)', color: 'var(--accent)' }}>
                 <FiClock size={24} />
               </span>
             </div>
@@ -60,20 +51,11 @@ function Home() {
           </div>
 
           <div
-            className="card-modern text-center p-4"
-            style={{ cursor: "pointer" }}
+            className="card-modern card-modern--clickable text-center p-4"
             onClick={() => navigate("/todo")}
           >
             <div className="mb-3 d-flex justify-content-center">
-              <span style={{ 
-                width: 50, height: 50, 
-                background: 'var(--success-subtle)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                color: 'var(--success)'
-              }}>
+              <span className="icon-badge" style={{ background: 'var(--success-subtle)', color: 'var(--success)' }}>
                 <FiCheckSquare size={24} />
               </span>
             </div>
@@ -86,20 +68,11 @@ function Home() {
           </div>
 
           <div
-            className="card-modern text-center p-4"
-            style={{ cursor: "pointer" }}
+            className="card-modern card-modern--clickable text-center p-4"
             onClick={() => navigate("/streak")}
           >
             <div className="mb-3 d-flex justify-content-center">
-              <span style={{ 
-                width: 50, height: 50, 
-                background: 'var(--danger-subtle)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                color: 'var(--danger)' // Using danger color for streaks hotness
-              }}>
+              <span className="icon-badge" style={{ background: 'var(--danger-subtle)', color: 'var(--danger)' }}>
                 <FiTrendingUp size={24} />
               </span>
             </div>
@@ -112,20 +85,11 @@ function Home() {
           </div>
 
           <div
-            className="card-modern text-center p-4"
-            style={{ cursor: "pointer" }}
+            className="card-modern card-modern--clickable text-center p-4"
             onClick={() => navigate("/analytics")}
           >
             <div className="mb-3 d-flex justify-content-center">
-              <span style={{
-                width: 50, height: 50,
-                background: 'var(--warning-subtle, rgba(245, 158, 11, 0.1))',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--warning, #f59e0b)'
-              }}>
+              <span className="icon-badge" style={{ background: 'var(--warning-subtle)', color: 'var(--warning)' }}>
                 <FiBarChart2 size={24} />
               </span>
             </div>
