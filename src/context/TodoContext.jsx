@@ -91,6 +91,88 @@ export function TodoProvider({ children }) {
     }
   }, []);
 
+  // Subtask operations
+  const addSubtask = useCallback(async (todoId, text) => {
+    if (!text.trim()) return;
+    try {
+      const data = await api(`/todos/${todoId}/subtasks`, {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      });
+      setTodos((prev) =>
+        prev.map((t) =>
+          t.id === todoId
+            ? { ...t, subtasks: [...(t.subtasks || []), data.subtask] }
+            : t
+        )
+      );
+    } catch (err) {
+      console.error("Failed to add subtask:", err);
+    }
+  }, []);
+
+  const toggleSubtask = useCallback(async (todoId, subtaskId, currentCompleted) => {
+    try {
+      const data = await api(`/todos/${todoId}/subtasks/${subtaskId}`, {
+        method: "PUT",
+        body: JSON.stringify({ completed: !currentCompleted }),
+      });
+      setTodos((prev) =>
+        prev.map((t) =>
+          t.id === todoId
+            ? {
+                ...t,
+                subtasks: t.subtasks.map((s) =>
+                  s.id === subtaskId ? data.subtask : s
+                ),
+              }
+            : t
+        )
+      );
+    } catch (err) {
+      console.error("Failed to toggle subtask:", err);
+    }
+  }, []);
+
+  const deleteSubtask = useCallback(async (todoId, subtaskId) => {
+    try {
+      await api(`/todos/${todoId}/subtasks/${subtaskId}`, { method: "DELETE" });
+      setTodos((prev) =>
+        prev.map((t) =>
+          t.id === todoId
+            ? { ...t, subtasks: t.subtasks.filter((s) => s.id !== subtaskId) }
+            : t
+        )
+      );
+    } catch (err) {
+      console.error("Failed to delete subtask:", err);
+    }
+  }, []);
+
+  const editSubtask = useCallback(async (todoId, subtaskId, newText) => {
+    if (!newText.trim()) return;
+    try {
+      const data = await api(`/todos/${todoId}/subtasks/${subtaskId}`, {
+        method: "PUT",
+        body: JSON.stringify({ text: newText }),
+      });
+      setTodos((prev) =>
+        prev.map((t) =>
+          t.id === todoId
+            ? {
+                ...t,
+                subtasks: t.subtasks.map((s) =>
+                  s.id === subtaskId ? data.subtask : s
+                ),
+              }
+            : t
+        )
+      );
+    } catch (err) {
+      console.error("Failed to edit subtask:", err);
+    }
+  }, []);
+
   // Derived state
   const activeTodos = todos.filter((t) => !t.completed);
   const completedTodos = todos.filter((t) => t.completed);
@@ -118,6 +200,10 @@ export function TodoProvider({ children }) {
     deleteTodo,
     editTodo,
     getTopTasks,
+    addSubtask,
+    toggleSubtask,
+    deleteSubtask,
+    editSubtask,
   };
 
   return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;
