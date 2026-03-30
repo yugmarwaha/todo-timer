@@ -89,6 +89,7 @@
   --warning: #fbbf24;
   --warning-subtle: rgba(251, 191, 36, 0.15);
   --danger: #f87171;
+  --danger-subtle: rgba(248, 113, 113, 0.15);
   --border-color: #1e293b;
   --input-bg: rgba(15, 23, 42, 0.6);
   --input-focus: rgba(30, 41, 59, 0.8);
@@ -343,6 +344,14 @@ input:focus, textarea:focus {
 @keyframes pulse-ring {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.02); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 768px) {
