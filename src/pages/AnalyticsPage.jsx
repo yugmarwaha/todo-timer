@@ -27,7 +27,7 @@ import {
 import "./AnalyticsPage.css";
 
 const CHART_COLORS = [
-  "#6366f1",
+  "#0ea5e9",
   "#10b981",
   "#f59e0b",
   "#ec4899",
@@ -225,7 +225,7 @@ function AnalyticsPage() {
                     />
                     <Bar
                       dataKey="count"
-                      fill="#6366f1"
+                      fill="#0ea5e9"
                       radius={[4, 4, 0, 0]}
                     />
                   </BarChart>
@@ -272,9 +272,9 @@ function AnalyticsPage() {
                     <Line
                       type="monotone"
                       dataKey="count"
-                      stroke="#6366f1"
+                      stroke="#0ea5e9"
                       strokeWidth={2}
-                      dot={{ r: 4, fill: "#6366f1" }}
+                      dot={{ r: 4, fill: "#0ea5e9" }}
                       activeDot={{ r: 6 }}
                     />
                   </LineChart>

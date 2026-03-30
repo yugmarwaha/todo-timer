@@ -112,25 +112,3 @@ export function computeAverageSessionLength(sessions) {
   const total = sessions.reduce((sum, s) => sum + s.durationSeconds, 0);
   return Math.round(total / sessions.length);
 }
-
-export function computeStreakInsights(streakData) {
-  const entries = Object.entries(streakData);
-  const activeDays = entries.filter(([, count]) => count > 0).length;
-  const totalSessions = entries.reduce(
-    (sum, [, count]) => sum + count,
-    0
-  );
-  const averageDailySessions =
-    activeDays > 0 ? Math.round((totalSessions / activeDays) * 10) / 10 : 0;
-
-  let mostProductiveDay = null;
-  let maxCount = 0;
-  entries.forEach(([date, count]) => {
-    if (count > maxCount) {
-      maxCount = count;
-      mostProductiveDay = date;
-    }
-  });
-
-  return { averageDailySessions, activeDays, mostProductiveDay, maxCount };
-}

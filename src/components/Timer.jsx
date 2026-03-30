@@ -99,25 +99,14 @@ function Timer() {
       <div className="d-flex flex-column align-items-center">
         {/* Circular Timer */}
         <div
+          className="timer-ring-container"
           style={{
-            position: "relative",
             width: size,
             height: size,
-            margin: "0 auto 1.5rem",
             animation: isRunning ? "pulse-ring 3s ease-in-out infinite" : "none",
           }}
         >
-          <svg
-            width={size}
-            height={size}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              transform: "rotate(-90deg)",
-              filter: "drop-shadow(0 0 10px rgba(99, 102, 241, 0.15))"
-            }}
-          >
+          <svg width={size} height={size} className="timer-ring-svg">
             {/* Background track */}
             <circle
               cx={center}
@@ -139,30 +128,21 @@ function Timer() {
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
-              style={{
-                transition: "stroke-dashoffset 1s linear",
-                filter: "drop-shadow(0 0 4px var(--accent))"
-              }}
+              style={{ transition: "stroke-dashoffset 1s linear" }}
             />
           </svg>
 
           {/* Time display */}
           <div
             onClick={handleTimeClick}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              textAlign: "center",
-              cursor: !isRunning && !isPaused ? "pointer" : "default",
-            }}
+            className="timer-center-content"
+            style={{ cursor: !isRunning && !isPaused ? "pointer" : "default" }}
           >
             <div className="timer-display-text font-mono">
               {String(hours).padStart(2, "0")}
-              <span className="separator">:</span>
+              <span>:</span>
               {String(minutes).padStart(2, "0")}
-              <span className="separator">:</span>
+              <span>:</span>
               {String(seconds).padStart(2, "0")}
             </div>
           </div>
@@ -186,7 +166,7 @@ function Timer() {
                     aria-label="Hours"
                     className="timer-input-field"
                   />
-                  <span style={{ color: "var(--text-muted)", fontWeight: 300, fontSize: "1.25rem" }}>:</span>
+                  <span className="timer-separator">:</span>
                   <input
                     type="number"
                     min="0"
@@ -198,7 +178,7 @@ function Timer() {
                     aria-label="Minutes"
                     className="timer-input-field"
                   />
-                  <span style={{ color: "var(--text-muted)", fontWeight: 300, fontSize: "1.25rem" }}>:</span>
+                  <span className="timer-separator">:</span>
                   <input
                     type="number"
                     min="0"
@@ -301,22 +281,10 @@ function Timer() {
                 <button
                   key={time}
                   onClick={() => setTime(0, time, 0)}
-                  className="btn-ghost"
-                  style={{
-                    flex: 1,
-                    padding: "0.75rem 0.5rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "4px",
-                  }}
+                  className="btn-ghost preset-btn"
                 >
-                  <span style={{ fontWeight: 700, fontSize: "1rem" }}>
-                    {time}m
-                  </span>
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    {label}
-                  </span>
+                  <span className="preset-btn__time">{time}m</span>
+                  <span className="preset-btn__label">{label}</span>
                 </button>
               ))}
             </div>

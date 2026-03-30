@@ -23,7 +23,7 @@ function LoginPage() {
 
   return (
     <div className="page-wrapper fade-in d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
-      <div className="container" style={{ maxWidth: 480 }}>
+      <div className="container auth-container">
         <div className="page-header" style={{ marginBottom: "2rem" }}>
           <h1>Welcome Back</h1>
           <p>Log in to continue your focus sessions.</p>
@@ -31,33 +31,11 @@ function LoginPage() {
 
         <div className="card-modern p-4">
           <form onSubmit={handleSubmit}>
-            {error && (
-              <div
-                style={{
-                  background: "var(--danger-subtle)",
-                  color: "var(--danger)",
-                  padding: "0.75rem 1rem",
-                  borderRadius: "12px",
-                  fontSize: "0.9rem",
-                  fontWeight: 600,
-                  marginBottom: "1rem",
-                }}
-              >
-                {error}
-              </div>
-            )}
+            {error && <div className="alert-error">{error}</div>}
 
             <div className="mb-3">
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  color: "var(--text-secondary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <FiMail size={14} style={{ marginRight: 6, verticalAlign: -2 }} />
+              <label className="form-label">
+                <FiMail size={14} />
                 Email
               </label>
               <input
@@ -67,21 +45,12 @@ function LoginPage() {
                 placeholder="you@example.com"
                 required
                 className="input-modern"
-                style={{ width: "100%" }}
               />
             </div>
 
             <div className="mb-4">
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  color: "var(--text-secondary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <FiLock size={14} style={{ marginRight: 6, verticalAlign: -2 }} />
+              <label className="form-label">
+                <FiLock size={14} />
                 Password
               </label>
               <input
@@ -92,7 +61,6 @@ function LoginPage() {
                 required
                 minLength={8}
                 className="input-modern"
-                style={{ width: "100%" }}
               />
             </div>
 
@@ -100,17 +68,14 @@ function LoginPage() {
               type="submit"
               disabled={submitting}
               className="btn-accent w-100 d-flex align-items-center justify-content-center gap-2"
-              style={{ padding: "0.875rem", fontSize: "1rem", opacity: submitting ? 0.7 : 1 }}
+              style={{ padding: "0.875rem", fontSize: "1rem" }}
             >
               <FiLogIn size={18} />
               {submitting ? "Logging in..." : "Log In"}
             </button>
           </form>
 
-          <p
-            className="text-center mt-4"
-            style={{ fontSize: "0.9rem", color: "var(--text-muted)" }}
-          >
+          <p className="text-center mt-4 text-muted" style={{ fontSize: "0.9rem" }}>
             Don&apos;t have an account?{" "}
             <Link to="/register" style={{ color: "var(--accent)", fontWeight: 600 }}>
               Sign up
