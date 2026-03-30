@@ -79,7 +79,7 @@
 
 .analytics-period-btn.active {
   background: var(--accent);
-  color: #fff;
+  color: var(--bg-primary);
   border-color: var(--accent);
 }
 
