@@ -37,7 +37,7 @@ function TaskSelector() {
 
       {activeTodos.length === 0 ? (
         <div className="empty-state" style={{ minHeight: "160px" }}>
-          <div className="icon-badge--sm" style={{ background: "var(--success-subtle)", color: "var(--success)", marginBottom: "1rem" }}>
+          <div className="icon-badge icon-badge--sm" style={{ background: "var(--success-subtle)", color: "var(--success)", marginBottom: "1rem" }}>
             <FiCheck size={20} />
           </div>
           <p className="text-muted fw-500 m-0">All set! No pending tasks.</p>

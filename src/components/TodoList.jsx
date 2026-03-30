@@ -168,7 +168,7 @@ function TodoList() {
       <div style={{ flex: 1, overflowY: "auto" }}>
         {activeTodos.length === 0 && completedTodos.length === 0 ? (
           <div className="empty-state" style={{ height: '100%' }}>
-            <div className="icon-badge--lg" style={{ background: 'var(--accent-subtle)', color: 'var(--accent)', marginBottom: '1rem' }}>
+            <div className="icon-badge icon-badge--lg" style={{ background: 'var(--accent-subtle)', color: 'var(--accent)', marginBottom: '1rem' }}>
               <FiList size={24}/>
             </div>
             <p className="text-muted fw-bold">
