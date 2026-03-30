@@ -25,10 +25,12 @@
   --accent-hover: #0ea5e9;
   --accent-subtle: rgba(56, 189, 248, 0.1);
   --accent-glow: 0 0 20px rgba(56, 189, 248, 0.3);
+  --accent-ring: rgba(56, 189, 248, 0.2);
 
   --success: #10b981;
   --success-subtle: rgba(16, 185, 129, 0.15);
   --warning: #f59e0b;
+  --warning-subtle: rgba(245, 158, 11, 0.1);
   --danger: #ef4444;
   --danger-subtle: rgba(239, 68, 68, 0.1);
   
@@ -80,10 +82,12 @@
   --accent-hover: #38bdf8;
   --accent-subtle: rgba(125, 211, 252, 0.15);
   --accent-glow: 0 0 30px rgba(125, 211, 252, 0.4);
+  --accent-ring: rgba(125, 211, 252, 0.15);
 
   --success: #34d399;
   --success-subtle: rgba(52, 211, 153, 0.15);
   --warning: #fbbf24;
+  --warning-subtle: rgba(251, 191, 36, 0.15);
   --danger: #f87171;
   --border-color: #1e293b;
   --input-bg: rgba(15, 23, 42, 0.6);
