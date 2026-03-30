@@ -139,21 +139,27 @@ function TaskSelector() {
                   >
                     {task.text}
                   </span>
-                  {task.totalTimeSeconds > 0 && (
-                    <span
-                      style={{
-                        fontSize: "0.75rem",
-                        color: "var(--text-muted)",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.25rem",
-                        marginTop: "2px",
-                      }}
-                    >
-                      <FiClock size={11} />
-                      {formatDuration(task.totalTimeSeconds)}
-                    </span>
-                  )}
+                  <div className="d-flex align-items-center gap-2" style={{ marginTop: "2px" }}>
+                    {task.totalTimeSeconds > 0 && (
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--text-muted)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <FiClock size={11} />
+                        {formatDuration(task.totalTimeSeconds)}
+                      </span>
+                    )}
+                    {task.subtasks?.length > 0 && (
+                      <span className="subtask-progress">
+                        {task.subtasks.filter((s) => s.completed).length}/{task.subtasks.length}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 {isSelected && isRunning && (
                   <div
