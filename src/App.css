@@ -552,7 +552,7 @@
 .card-modern--clickable:hover {
   transform: translateY(-3px);
   box-shadow: var(--card-shadow-hover);
-  border-color: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-ring);
 }
 
 /* Auth Container */
