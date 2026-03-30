@@ -214,21 +214,6 @@
   overflow: hidden;
 }
 
-/* Premium Glow behind timer */
-.timer-card::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 200px;
-  height: 200px;
-  background: var(--accent);
-  filter: blur(80px);
-  opacity: 0.15;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  z-index: 0;
-}
 
 .timer-display-text {
   font-size: var(--timer-font-size);
