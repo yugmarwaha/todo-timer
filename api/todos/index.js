@@ -10,8 +10,16 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const result = await pool.query(
-        `SELECT id, text, completed, created_at AS "createdAt", total_time_seconds AS "totalTimeSeconds"
-         FROM todos WHERE user_id = $1 ORDER BY created_at ASC`,
+        `SELECT t.id, t.text, t.completed, t.created_at AS "createdAt", t.total_time_seconds AS "totalTimeSeconds",
+         COALESCE(json_agg(
+           json_build_object('id', s.id, 'text', s.text, 'completed', s.completed, 'createdAt', s.created_at)
+           ORDER BY s.created_at
+         ) FILTER (WHERE s.id IS NOT NULL), '[]') AS subtasks
+         FROM todos t
+         LEFT JOIN subtasks s ON s.todo_id = t.id
+         WHERE t.user_id = $1
+         GROUP BY t.id
+         ORDER BY t.created_at ASC`,
         [userId]
       );
       return res.status(200).json({ todos: result.rows });
@@ -33,7 +41,7 @@ export default async function handler(req, res) {
          RETURNING id, text, completed, created_at AS "createdAt", total_time_seconds AS "totalTimeSeconds"`,
         [userId, text.trim()]
       );
-      return res.status(201).json({ todo: result.rows[0] });
+      return res.status(201).json({ todo: { ...result.rows[0], subtasks: [] } });
     } catch (err) {
       console.error("Create todo error:", err);
       return res.status(500).json({ error: "Internal server error" });
