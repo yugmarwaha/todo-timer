@@ -5,6 +5,18 @@ import Quotes from "../components/Quotes";
 function Home() {
   const navigate = useNavigate();
 
+  const cardProps = (path) => ({
+    role: "button",
+    tabIndex: 0,
+    onClick: () => navigate(path),
+    onKeyDown: (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        navigate(path);
+      }
+    },
+  });
+
   return (
     <div className="page-wrapper fade-in">
       <div className="container">
@@ -35,7 +47,7 @@ function Home() {
         <div className="grid-3 mb-5">
           <div
             className="card-modern card-modern--clickable text-center p-4"
-            onClick={() => navigate("/timer")}
+            {...cardProps("/timer")}
           >
             <div className="mb-3 d-flex justify-content-center">
               <span className="icon-badge" style={{ background: 'var(--accent-subtle)', color: 'var(--accent)' }}>
@@ -52,7 +64,7 @@ function Home() {
 
           <div
             className="card-modern card-modern--clickable text-center p-4"
-            onClick={() => navigate("/todo")}
+            {...cardProps("/todo")}
           >
             <div className="mb-3 d-flex justify-content-center">
               <span className="icon-badge" style={{ background: 'var(--success-subtle)', color: 'var(--success)' }}>
@@ -69,7 +81,7 @@ function Home() {
 
           <div
             className="card-modern card-modern--clickable text-center p-4"
-            onClick={() => navigate("/streak")}
+            {...cardProps("/streak")}
           >
             <div className="mb-3 d-flex justify-content-center">
               <span className="icon-badge" style={{ background: 'var(--danger-subtle)', color: 'var(--danger)' }}>
@@ -86,7 +98,7 @@ function Home() {
 
           <div
             className="card-modern card-modern--clickable text-center p-4"
-            onClick={() => navigate("/analytics")}
+            {...cardProps("/analytics")}
           >
             <div className="mb-3 d-flex justify-content-center">
               <span className="icon-badge" style={{ background: 'var(--warning-subtle)', color: 'var(--warning)' }}>
