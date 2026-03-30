@@ -477,6 +477,11 @@
   animation: pulse-dot 1.5s infinite;
 }
 
+/* Streak Calendar Cell */
+.streak-cell:hover {
+  transform: scale(1.3);
+}
+
 /* Timer Presets */
 .preset-btn {
   flex: 1;

@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router";
 import { useStreak } from "../context/StreakContext";
 import { generateDateRange } from "../services/streakService";
 import { useMemo, useState, useEffect } from "react";
-import { FiTrendingUp, FiAward, FiZap } from "react-icons/fi";
+import { FiTrendingUp, FiAward, FiZap, FiPlay } from "react-icons/fi";
 
 function StreakPage() {
+  const navigate = useNavigate();
   const { streakData, currentStreak, longestStreak, totalCompletions } =
     useStreak();
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -154,6 +156,32 @@ function StreakPage() {
           ))}
         </div>
 
+        {totalCompletions === 0 && (
+          <div
+            className="card-modern text-center py-5 d-flex flex-column align-items-center justify-content-center mb-4"
+            style={{ minHeight: "200px" }}
+          >
+            <div style={{
+              width: 60, height: 60, borderRadius: '50%',
+              background: 'var(--accent-subtle)', color: 'var(--accent)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: '1rem'
+            }}>
+              <FiTrendingUp size={24} />
+            </div>
+            <p style={{ fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+              No focus sessions yet
+            </p>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>
+              Complete a timer session to start building your streak.
+            </p>
+            <button className="btn-accent d-flex align-items-center gap-2" onClick={() => navigate("/timer")}>
+              <FiPlay size={16} />
+              Start Timer
+            </button>
+          </div>
+        )}
+
         {/* Contribution Calendar */}
         <div
           className="card-modern"
@@ -233,12 +261,18 @@ function StreakPage() {
                     {week.map((day, dayIndex) => (
                       <div
                         key={dayIndex}
+                        className={day && day.count > 0 ? "streak-cell" : ""}
                         title={
                           day
                             ? `${day.count} session${
                                 day.count !== 1 ? "s" : ""
                               } on ${day.date.toLocaleDateString()}`
                             : ""
+                        }
+                        aria-label={
+                          day
+                            ? `${day.count} session${day.count !== 1 ? "s" : ""} on ${day.date.toLocaleDateString()}`
+                            : undefined
                         }
                         style={{
                           width: `${cellSize}px`,
@@ -249,12 +283,6 @@ function StreakPage() {
                             : "transparent",
                           cursor: day ? "pointer" : "default",
                           transition: "transform 0.1s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (day) e.target.style.transform = "scale(1.3)";
-                        }}
-                        onMouseLeave={(e) => {
-                          if (day) e.target.style.transform = "scale(1)";
                         }}
                       />
                     ))}
