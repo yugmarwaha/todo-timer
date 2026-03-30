@@ -1,5 +1,5 @@
-import pool from "../../../../_db.js";
-import { verifyRequest } from "../../../../_auth.js";
+import pool from "../../../_db.js";
+import { verifyRequest } from "../../../_auth.js";
 
 export default async function handler(req, res) {
   const auth = verifyRequest(req);

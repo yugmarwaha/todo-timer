@@ -44,14 +44,14 @@ async function findHandler(method, url) {
   }
 
   // Dynamic route: /api/todos/:id/subtasks/:subtaskId
-  const subtaskItemMatch = path.match(/^\/api\/todos\/(\d+)\/subtasks\/(\d+)$/);
+  const subtaskItemMatch = path.match(/^\/api\/todos\/([^/]+)\/subtasks\/([^/]+)$/);
   if (subtaskItemMatch && (method === "PUT" || method === "DELETE")) {
     const mod = await import("./api/todos/[id]/subtasks/[subtaskId].js");
     return { handler: mod.default, query: { id: subtaskItemMatch[1], subtaskId: subtaskItemMatch[2] } };
   }
 
   // Dynamic route: /api/todos/:id/subtasks
-  const subtasksMatch = path.match(/^\/api\/todos\/(\d+)\/subtasks$/);
+  const subtasksMatch = path.match(/^\/api\/todos\/([^/]+)\/subtasks$/);
   if (subtasksMatch && (method === "GET" || method === "POST")) {
     const mod = await import("./api/todos/[id]/subtasks/index.js");
     return { handler: mod.default, query: { id: subtasksMatch[1] } };
